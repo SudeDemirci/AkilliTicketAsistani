@@ -1,0 +1,58 @@
+{
+  "Yazilim Sorunu": {
+    "count": 44,
+    "sure_mean": 3.1818181818181817,
+    "sure_M2": 30.045454545454543,
+    "maliyet_mean": 1193.1818181818182,
+    "maliyet_M2": 35057954.54545455
+  },
+  "Donanim Arizasi": {
+    "count": 3,
+    "sure_mean": 3.5,
+    "sure_M2": 0.0,
+    "maliyet_mean": 750.0,
+    "maliyet_M2": 0.0
+  },
+  "Veritabani": {
+    "count": 4,
+    "sure_mean": 3.375,
+    "sure_M2": 0.1875,
+    "maliyet_mean": 1937.5,
+    "maliyet_M2": 16921875.0
+  },
+  "E-posta / Iletisim": {
+    "count": 4,
+    "sure_mean": 3.375,
+    "sure_M2": 0.1875,
+    "maliyet_mean": 1812.5,
+    "maliyet_M2": 13546875.0
+  },
+  "Yedekleme / Veri": {
+    "count": 2,
+    "sure_mean": 2.0,
+    "sure_M2": 0.0,
+    "maliyet_mean": 2250.0,
+    "maliyet_M2": 1125000.0
+  },
+  "Lisans / Abonelik": {
+    "count": 1,
+    "sure_mean": 6.0,
+    "sure_M2": 0.0,
+    "maliyet_mean": 6000.0,
+    "maliyet_M2": 0.0
+  },
+  "Mobil Uygulama Geliştirme": {
+    "count": 1,
+    "sure_mean": 2.0,
+    "sure_M2": 0.0,
+    "maliyet_mean": 4500.0,
+    "maliyet_M2": 0.0
+  },
+  "Tasarım / Estetik": {
+    "count": 1,
+    "sure_mean": 3.0,
+    "sure_M2": 0.0,
+    "maliyet_mean": 5600.0,
+    "maliyet_M2": 0.0
+  }
+}

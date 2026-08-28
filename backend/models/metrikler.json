@@ -1,0 +1,9 @@
+{
+  "kategori_accuracy": 1.0,
+  "sure_mae": 1.56,
+  "sure_r2": 0.3992,
+  "maliyet_mae": 3636.0,
+  "maliyet_r2": 0.5072,
+  "toplam_veri": 2092,
+  "egitim_tarihi": "2026-08-25T15:28:49.769534"
+}

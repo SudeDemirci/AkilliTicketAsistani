@@ -1,0 +1,12 @@
+{
+  "Yazılım Sorunu": "Yazılım Destek Ekibi",
+  "Donanım Arızası": "Donanım / Teknik Servis",
+  "Ağ / Bağlantı": "Ağ Altyapı Ekibi",
+  "Güvenlik / Erişim": "Siber Güvenlik & IAM",
+  "Veritabanı": "Veritabanı Yönetimi",
+  "E-posta / İletişim": "İletişim Sistemleri",
+  "Yedekleme / Veri": "Veri Yönetimi & Yedekleme",
+  "Lisans / Abonelik": "IT Satın Alma & Lisans",
+  "Mobil Uygulama Geliştirme": "Mobil ve Web Teknolojileri",
+  "_default": "Genel IT Destek"
+}

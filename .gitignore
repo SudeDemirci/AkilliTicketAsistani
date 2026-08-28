@@ -1,0 +1,21 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+venv/
+env/
+.venv/
+
+# Node
+node_modules/
+dist/
+build/
+
+# Project specifics
+backend/models/*.pkl
+backend/data/tickets.csv
+backend/data/tickets.db
+backend/data/embeddings_cache.json
+backend/data/uploads/*
+!backend/data/uploads/.gitkeep

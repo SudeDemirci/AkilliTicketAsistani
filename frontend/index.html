@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Albaraka IT Destek Sistemi</title>
+  <meta name="description" content="Albaraka IT destek talebi yönetim platformu." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=19" />
+</head>
+<body>
+
+<!-- ── HEADER ─────────────────────────────────────────────────── -->
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <rect width="28" height="28" rx="8" fill="#E55A00"/>
+        <path d="M8 14h12M14 8v12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div>
+      <div class="header-title">Albaraka IT Destek Sistemi</div>
+      <div class="header-subtitle">IT Destek Yönetim Platformu</div>
+    </div>
+  </div>
+
+  <div class="user-controls" style="display: flex; align-items: center;">
+    <span id="user-info" style="display:none; font-size:0.9rem; font-weight:600; margin-right:1rem; color:var(--text-dark);"></span>
+    <button class="view-btn" id="btn-logout" style="display:none; border-color:#ef4444; color:#ef4444;" onclick="handleLogout()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      Çıkış Yap
+    </button>
+  </div>
+</header>
+
+<!-- ── LOGIN VIEW ────────────────────────────────────────────── -->
+<div class="view active" id="view-login">
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <svg width="48" height="48" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="#1e293b"/>
+          <path d="M8 14h12M14 8v12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <h1>Sisteme Giriş</h1>
+        <p>Albaraka IT Destek Platformu</p>
+      </div>
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Kullanıcı Adı</label>
+          <input type="text" id="login-user" placeholder="Örn: calisan veya uzman" required />
+        </div>
+        <div class="form-group">
+          <label>Şifre</label>
+          <input type="password" id="login-pass" placeholder="****" required />
+        </div>
+        <div class="login-error" id="login-error" style="display:none; color:red; font-size:13px; margin-bottom:10px;">Hatalı giriş!</div>
+        <button type="submit" class="submit-btn" style="width:100%">Giriş Yap</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ── EMPLOYEE VIEW ─────────────────────────────────────────── -->
+<div class="view" id="view-employee">
+  <div class="employee-container">
+
+    <!-- Sol: Form -->
+    <div class="form-card">
+      <div class="form-card-header">
+        <h1>Destek Talebi Oluştur</h1>
+        <p>Karşılaştığınız sorunu aşağıdaki formu doldurarak bildirin.</p>
+      </div>
+
+      <form id="ticket-form" onsubmit="submitTicket(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ad-soyad">Ad Soyad <span class="required">*</span></label>
+            <input type="text" id="ad-soyad" placeholder="Adınız Soyadınız" required />
+          </div>
+          <div class="form-group">
+            <label for="birim">Birim <span class="required">*</span></label>
+            <select id="birim" required>
+              <option value="">Birim seçin</option>
+              <option>İnsan Kaynakları</option>
+              <option>Muhasebe</option>
+              <option>Satış</option>
+              <option>Mühendislik</option>
+              <option>Pazarlama</option>
+              <option>Operasyon</option>
+              <option>Hukuk</option>
+              <option>Ar-Ge</option>
+              <option>Finans</option>
+              <option>IT</option>
+              <option>Diğer</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="talep-turu">Talep Türü <span class="required">*</span></label>
+          <div class="talep-turu-grid" id="talep-turu-grid">
+            <button type="button" class="ttur-btn active" data-value="Bug / Hata" onclick="selectTalepTuru(this)">
+              <span class="ttur-label">Bug / Hata</span>
+            </button>
+            <button type="button" class="ttur-btn" data-value="Özellik İsteği" onclick="selectTalepTuru(this)">
+              <span class="ttur-label">Özellik İsteği</span>
+            </button>
+            <button type="button" class="ttur-btn" data-value="Erişim Sorunu" onclick="selectTalepTuru(this)">
+              <span class="ttur-label">Erişim Sorunu</span>
+            </button>
+            <button type="button" class="ttur-btn" data-value="Donanım Arızası" onclick="selectTalepTuru(this)">
+              <span class="ttur-label">Donanım Arızası</span>
+            </button>
+            <button type="button" class="ttur-btn" data-value="İletişim Sorunu" onclick="selectTalepTuru(this)">
+              <span class="ttur-label">İletişim Sorunu</span>
+            </button>
+            <button type="button" class="ttur-btn" data-value="Diğer" onclick="selectTalepTuru(this)">
+              <span class="ttur-label">Diğer</span>
+            </button>
+          </div>
+          <input type="hidden" id="talep-turu-val" value="Bug / Hata" />
+        </div>
+
+        <div class="form-group">
+          <label for="mesaj">Sorun Açıklaması <span class="required">*</span></label>
+          <textarea id="mesaj" rows="4" placeholder="Yaşadığınız sorunu detaylı açıklayın..." required></textarea>
+          <span class="char-count" id="char-count">0 / 1000</span>
+        </div>
+
+        <div class="form-group">
+          <label>Dosya Ekle <span class="optional">(PDF, TXT, LOG)</span></label>
+          <div class="file-drop" id="file-drop" onclick="document.getElementById('file-input').click()" ondragover="fileDragOver(event)" ondrop="fileDrop(event)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span id="file-label">Dosya seçin veya buraya sürükleyin</span>
+            <span class="file-hint">PDF, TXT, LOG, PNG, JPG — max 5MB</span>
+          </div>
+          <input type="file" id="file-input" accept=".pdf,.txt,.log,.csv,.png,.jpg,.jpeg" style="display:none" onchange="fileSelected(this)" />
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Talebi Gönder
+        </button>
+      </form>
+    </div>
+
+    <!-- Başarı Mesajı (Gizli Başlangıçta) -->
+    <div class="success-panel" id="success-panel" style="display:none">
+      <div class="success-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      </div>
+      <h2>Talebiniz Başarıyla Alındı!</h2>
+      <p>IT Destek ekibimiz en kısa sürede talebinizi inceleyecektir.</p>
+      <div class="ticket-ref">Talep No: <strong id="success-talep-no">TKT-0000</strong></div>
+      <button class="btn-primary" onclick="resetForm()" style="margin-top:20px;">Yeni Talep Oluştur</button>
+      <button class="btn-secondary" onclick="openThreadModal(document.getElementById('success-talep-no').textContent)" style="margin-top:10px;">💬 Yazışmaları Gör / Durum Takip Et</button>
+    </div>
+
+    <!-- Geçmiş Talepler Butonu -->
+    <div style="text-align:center; margin-top: 5px;">
+      <button class="view-btn" onclick="showMyTickets()" style="background: #1e293b; color: white; padding: 10px 20px;">Geçmiş Taleplerimi ve Mesajlarımı Gör</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── IT EXPERT VIEW ─────────────────────────────────────────── -->
+<div class="view" id="view-expert">
+
+  <!-- Çalışan Geri Dön Butonu -->
+  <div id="employee-back-bar" style="display:none; padding: 20px 24px 0;">
+    <button class="view-btn" onclick="showEmployeeForm()" style="background:#1e293b; color:white; padding:10px 16px; font-weight: 600;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px; vertical-align:text-bottom;"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Yeni Talep Oluştur
+    </button>
+  </div>
+
+  <!-- İstatistik Barı -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-number" id="stat-total">—</span>
+      <span class="stat-label">Toplam</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-number p1-color" id="stat-p1">—</span>
+      <span class="stat-label">🔴 P1 Kritik</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number p2-color" id="stat-p2">—</span>
+      <span class="stat-label">🟠 P2 Yüksek</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number p3-color" id="stat-p3">—</span>
+      <span class="stat-label">🟡 P3 Orta</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number p4-color" id="stat-p4">—</span>
+      <span class="stat-label">⚪ P4 Düşük</span>
+    </div>
+    <button class="refresh-btn" onclick="loadTickets()" title="Yenile">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+    </button>
+  </div>
+
+  <!-- Filtre & Durum -->
+  <div class="expert-toolbar">
+    <div class="filter-group">
+      <button class="filter-btn active" data-filter="all" onclick="filterTickets(this, 'all')">Tümü</button>
+      <button class="filter-btn" data-filter="P1" onclick="filterTickets(this, 'P1')">🔴 P1</button>
+      <button class="filter-btn" data-filter="P2" onclick="filterTickets(this, 'P2')">🟠 P2</button>
+      <button class="filter-btn" data-filter="P3" onclick="filterTickets(this, 'P3')">🟡 P3</button>
+      <button class="filter-btn" data-filter="P4" onclick="filterTickets(this, 'P4')">⚪ P4</button>
+    </div>
+    <div class="status-filter">
+      <label class="toggle-label">
+        <input type="checkbox" id="show-done" onchange="loadTickets()" />
+        Tamamlananları göster
+      </label>
+    </div>
+  </div>
+
+  <!-- Ticket Listesi -->
+  <div class="ticket-list" id="ticket-list">
+    <div class="list-loading" id="list-loading">
+      <div class="spinner"></div>
+      <span>Talepler yükleniyor...</span>
+    </div>
+    <div class="list-empty" id="list-empty" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      <p>Henüz talep bulunmuyor.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Tamamlandı ───────────────────────────────────────── -->
+<div class="modal-overlay" id="complete-modal" style="display:none" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">✅ Talep Tamamlandı</div>
+        <div class="modal-subtitle" id="modal-talep-no">TKT-0000</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('complete-modal').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc">Gerçek süre ve maliyeti girin. Bu bilgiler gelecek tahminleri iyileştirmek için kullanılır.</p>
+      <div class="modal-fields">
+        <div class="modal-field">
+          <label>Gerçek Çözüm Süresi</label>
+          <div class="input-suffix">
+            <input type="number" id="modal-sure" min="0.1" step="0.5" placeholder="0" />
+            <span>gün</span>
+          </div>
+        </div>
+        <div class="modal-field">
+          <label>Gerçek Maliyet</label>
+          <div class="input-suffix">
+            <input type="number" id="modal-maliyet" min="0" step="50" placeholder="0" />
+            <span>TL</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-info">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Girilen veriler yapay zekanın sonraki tahminlerinde kullanılacak.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="document.getElementById('complete-modal').style.display='none'">İptal</button>
+      <button class="btn-primary" id="modal-save-btn" onclick="saveComplete()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL: Yorumlar / Thread ──────────────────────────────────── -->
+<div class="modal-overlay" id="thread-modal" style="display:none" onclick="closeThreadModal(event)">
+  <div class="modal" style="max-width: 600px; height: 80vh; display: flex; flex-direction: column;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">💬 Talep Detayı ve Yazışmalar</div>
+        <div class="modal-subtitle" id="thread-talep-no">TKT-0000</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('thread-modal').style.display='none'">✕</button>
+    </div>
+    <div class="modal-body" id="thread-messages" style="flex: 1; overflow-y: auto; background: #f8fafc; padding: 20px; display: flex; flex-direction: column; gap: 15px;">
+      <!-- Yorumlar buraya js ile eklenecek -->
+    </div>
+    <div class="modal-footer" style="background: #fff; padding: 15px; border-top: 1px solid #e2e8f0;">
+      <form id="thread-form" onsubmit="submitComment(event)" style="display: flex; gap: 10px; width: 100%; padding:0;">
+        <input type="text" id="thread-input" autocomplete="off" placeholder="Bir mesaj yazın..." style="flex:1; padding: 10px 15px; border: 1px solid #cbd5e1; border-radius: 20px; outline: none;" required />
+        <button type="submit" style="background: #1e293b; color: white; border: none; border-radius: 20px; padding: 0 20px; cursor: pointer; font-weight: 500;">Gönder</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=22"></script>
+</body>
+</html>
