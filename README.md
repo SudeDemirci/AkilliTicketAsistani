@@ -1,4 +1,4 @@
-# 🎫 Akıllı Ticket Asistanı
+# Akıllı Ticket Asistanı
 
 > NLP tabanlı kurum içi IT destek talebi analiz ve yönlendirme sistemi.
 
@@ -9,7 +9,7 @@
 
 ---
 
-## 🚀 Özellikler
+##  Özellikler
 
 - **AI Kategori Sınıflandırma** — TF-IDF + SVC ile 8 kategori, ~%90+ doğruluk
 - **Çözüm Süresi Tahmini** — RandomForest Regressor (gün cinsinden)
@@ -22,7 +22,7 @@
 
 ---
 
-## 📁 Proje Yapısı
+##  Proje Yapısı
 
 ```
 AkıllıTicketAsistanı/
@@ -46,7 +46,7 @@ AkıllıTicketAsistanı/
 
 ---
 
-## ⚡ Hızlı Başlangıç
+##  Hızlı Başlangıç
 
 ### Yöntem 1: Docker Compose (Önerilen)
 
@@ -95,7 +95,7 @@ Tarayıcıda: http://localhost:3000
 
 ---
 
-## 🤖 AI Model Detayları
+##  AI Model Detayları
 
 | Model | Algoritma | Hedef |
 |-------|-----------|-------|
@@ -115,7 +115,7 @@ Tarayıcıda: http://localhost:3000
 
 ---
 
-## 🛠️ Teknoloji Stack
+##  Teknoloji Stack
 
 - **Backend:** Python 3.11, FastAPI, Uvicorn, Pydantic v2
 - **AI/ML:** Scikit-learn, Pandas, NumPy, Joblib
@@ -124,7 +124,7 @@ Tarayıcıda: http://localhost:3000
 
 ---
 
-## 📊 Örnek API İsteği
+##  Örnek API İsteği
 
 ```bash
 curl -X POST http://localhost:8000/analiz-et \
