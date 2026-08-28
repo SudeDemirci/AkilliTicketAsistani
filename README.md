@@ -81,7 +81,7 @@ Tarayıcıda: http://localhost:3000
 
 ---
 
-## 🔗 API Endpoint'leri
+##  API Endpoint'leri
 
 | Method | Endpoint | Açıklama |
 |--------|----------|----------|
