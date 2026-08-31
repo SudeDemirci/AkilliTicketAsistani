@@ -16,9 +16,9 @@ from datetime import datetime
 KATEGORI_AGIRLIK = {
     "Güvenlik / Erişim":  10,
     "Veritabanı":          9,
-    "Donanım Arızası":     8,
-    "Ağ / Bağlantı":       7,
-    "Yazılım Sorunu":      6,
+    "Ağ / Bağlantı":       8,
+    "Yazılım Sorunu":      7,
+    "Donanım Arızası":     5,
     "E-posta / İletişim":  5,
     "Yedekleme / Veri":    4,
     "Lisans / Abonelik":   3,
@@ -29,9 +29,9 @@ KATEGORI_AGIRLIK = {
 TALEP_TURU_AGIRLIK = {
     "Bug / Hata":           1.6,
     "Erişim Sorunu":        1.5,
-    "Donanım Arızası":      1.4,
     "İletişim Sorunu":      1.2,
     "Veri / Yedekleme":     1.1,
+    "Donanım Arızası":      1.1,
     "Lisans Sorunu":        1.0,
     "Özellik İsteği":       0.7,
     "Diğer":                1.0,

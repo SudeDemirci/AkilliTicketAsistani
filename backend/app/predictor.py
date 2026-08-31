@@ -47,6 +47,7 @@ class TahminMotoru:
         self.sure_bundle = None
         self.maliyet_bundle = None
         self.metrikler = {}
+        self.embedding_model = None
         self._yukle()
 
     def _yukle(self):
@@ -65,6 +66,13 @@ class TahminMotoru:
             if os.path.exists(met_path):
                 with open(met_path, encoding="utf-8") as f:
                     self.metrikler = json.load(f)
+            try:
+                # We just check if it's importable, we will instantiate it lazily in emsal_bul
+                import sentence_transformers
+                self.has_sentence_transformers = True
+            except Exception as e:
+                self.has_sentence_transformers = False
+                print(f"[UYARI] Embedding modeli yüklenemedi: {e}")
             return True
         return False
 
@@ -190,7 +198,6 @@ class TahminMotoru:
             return None
 
         from sklearn.metrics.pairwise import cosine_similarity
-        from sklearn.feature_extraction.text import TfidfVectorizer
         
         adaylar = []
         aday_indexleri = []
@@ -210,22 +217,28 @@ class TahminMotoru:
         if not adaylar:
             return None
             
-        # Dinamik TF-IDF: Sadece mevcut metinler üzerinden kelime dağarcığı oluştur (Out-of-vocabulary sorununu çözer)
-        all_texts = [hedef_metin] + adaylar
         try:
-            vectorizer = TfidfVectorizer(min_df=1)
-            tfidf_matrix = vectorizer.fit_transform(all_texts)
-        except ValueError:
-            return None
+            from sklearn.feature_extraction.text import TfidfVectorizer
             
-        hedef_tfidf = tfidf_matrix[0:1]
-        aday_tfidf = tfidf_matrix[1:]
+            # Use the existing TF-IDF vectorizer if available, or create a quick local one
+            if getattr(self, 'sure_bundle', None) and 'tfidf' in self.sure_bundle:
+                tfidf = self.sure_bundle['tfidf']
+                hedef_vec = tfidf.transform([hedef_metin])
+                aday_vec = tfidf.transform(adaylar)
+            else:
+                tfidf = TfidfVectorizer(max_features=1000)
+                tum_metinler = adaylar + [hedef_metin]
+                tum_vec = tfidf.fit_transform(tum_metinler)
+                aday_vec = tum_vec[:-1]
+                hedef_vec = tum_vec[-1]
+                
+            skorlar = cosine_similarity(hedef_vec, aday_vec)[0]
+        except Exception as e:
+            print(f"[HATA] Semantic Search başarısız: {e}")
+            return None
         
-        skorlar = cosine_similarity(hedef_tfidf, aday_tfidf)[0]
-        
-        # TF-IDF benzerlik skorları için eşiği yükseltiyoruz.
-        # %10 (0.10) çok düşük olduğu için sadece "e-posta" kelimesi bile eşleşmeye yetiyordu.
-        # Bunu %25 (0.25) seviyesine çıkararak sadece gerçekten benzeyen biletlerin gelmesini sağlıyoruz.
+        # TF-IDF benzerlik skorları için eşiği 0.25'e düşürüyoruz. 
+        # Çünkü TF-IDF skorları kelime bazlı olduğu için yoğun embeddinglere göre daha düşüktür.
         guncel_min_sim = 0.25
         
         top_indexler = []

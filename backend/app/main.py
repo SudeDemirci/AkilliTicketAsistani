@@ -371,6 +371,7 @@ def ticket_analiz_json(girdi: TicketGirdi):
 
 
 @app.get("/talepler", tags=["Biletler"])
+@app.get("/biletleri-getir", tags=["Biletler"])
 def talepler_listele(durum: Optional[str] = None, kullanici_adi: Optional[str] = None):
     """
     Tum talepleri AI oncelik skoruna gore sirali dondurur.

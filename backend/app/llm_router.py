@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -17,7 +18,7 @@ GECERLI_KATEGORILER = [
     "Tasarım / Estetik"
 ]
 
-def predict_category_with_llm(gonderen_birim: str, oncelik: str, mesaj: str) -> str:
+def predict_category_with_llm(gonderen_birim: str, oncelik: str, mesaj: str, ek_icerik: Optional[str] = None) -> str:
     """
     Talebi Gemini 2.5 Flash ile analiz edip en doğru kategoriyi döner.
     API key yoksa veya hata olursa None döner.
@@ -34,16 +35,21 @@ def predict_category_with_llm(gonderen_birim: str, oncelik: str, mesaj: str) -> 
 Görev: Gelen talebin bağlamını anlayarak aşağıdaki kategorilerden en uygun olana atamak.
 SADECE kategorinin adını yaz, başka hiçbir kelime, noktalama veya açıklama ekleme.
 
-Dikkat: Eğer metinde bir uygulamanın (mobil, web vb) içine bir özellik (örneğin e-posta butonu, yeni ekran) eklenmesi isteniyorsa, bu "E-posta / İletişim" DEĞİL, doğrudan "Mobil Uygulama Geliştirme" veya "Yazılım Sorunu"dur. Bağlamı insan gibi analiz et.
-Ek Kural: "Uygulamanın rengi değişsin", "arayüz", "tasarım", "buton rengi" gibi UI/UX estetik değişiklikleri kesinlikle "Tasarım / Estetik" olarak sınıflandırılmalıdır.
+  Dikkat: Eğer metinde bir uygulamanın (mobil, web vb) içine bir özellik (örneğin e-posta butonu, yeni ekran) eklenmesi isteniyorsa, bu "E-posta / İletişim" DEĞİL, doğrudan "Mobil Uygulama Geliştirme" veya "Yazılım Sorunu"dur. Bağlamı insan gibi analiz et.
+  Ek Kural 1: "Uygulamanın rengi değişsin", "arayüz", "tasarım", "buton rengi" gibi UI/UX estetik değişiklikleri kesinlikle "Tasarım / Estetik" olarak sınıflandırılmalıdır.
+  Ek Kural 2: Eğer Ek (Dosya) İçeriğinde veya mesajda veritabanı hataları ("HikariPool", "Connection refused", "SQL", "veritabanı", "database") varsa, bu KESİNLİKLE "Veritabanı" olarak sınıflandırılmalıdır. Sadece "Yazılım Sorunu" deyip geçme.
 
 Geçerli Kategoriler:
 {chr(10).join(['- ' + k for k in GECERLI_KATEGORILER])}
 
 Gönderen Birim: {gonderen_birim}
 Öncelik: {oncelik}
-Talep Mesajı: {mesaj}
-Kategori:"""
+Talep Mesajı: {mesaj}"""
+        if ek_icerik:
+            prompt += f"\nEk (Dosya) İçeriği:\n{ek_icerik[:1000]}"
+            
+        prompt += "\nKategori:"
+        print(f"--- LLM PROMPT ---\n{prompt}\n------------------", flush=True)
         
         response = client.models.generate_content(
             model='gemini-3.6-flash',

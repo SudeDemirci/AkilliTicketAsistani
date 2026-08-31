@@ -3,7 +3,7 @@
  * Calisان Portali + IT Uzmani Paneli
  */
 
-const API = "http://127.0.0.1:8000";
+const API = "http://localhost:3000/api";
 
 const CAT_ICON = {
   "Yazilim Sorunu":     "💻",
@@ -200,8 +200,7 @@ async function loadTickets(silent = false) {
     if (currentUser && currentUser.rol === "calisan") {
       url += `?kullanici_adi=${currentUser.kullanici_adi}`;
     }
-    
-    const res = await fetch(url);
+    const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) {
         throw new Error("Sunucu " + res.status + " hatasi dondu");
     }
@@ -526,7 +525,7 @@ async function loadThread(talepNo) {
   const container = document.getElementById("thread-messages");
   container.innerHTML = '<div class="spinner-sm"></div>';
   try {
-    const res = await fetch(`${API}/talep/${talepNo}/yorum`);
+    const res = await fetch(`${API}/talep/${talepNo}/yorum`, { cache: 'no-store' });
     const yorumlar = await res.json();
     container.innerHTML = "";
     if (yorumlar.length === 0) {
