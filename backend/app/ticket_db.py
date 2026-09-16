@@ -8,7 +8,7 @@ import os
 import json
 import sqlite3
 import threading
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, List
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -45,7 +45,11 @@ def _init_db():
             gercek_maliyet_tl REAL,
             ai_oncelik TEXT,
             yuklenen_dosya TEXT,
-            kullanici_adi TEXT
+            kullanici_adi TEXT,
+            sla_deadline TEXT,
+            eskalasyon_seviyesi INTEGER DEFAULT 0,
+            llm_etki TEXT,
+            llm_aciliyet TEXT
         )
     ''')
     
@@ -71,7 +75,16 @@ def _init_db():
             created_at TEXT
         )
     ''')
-
+    # Mevcut DB'ye yeni sutunlar ekle (migration)
+    try:
+        c.execute("ALTER TABLE talepler ADD COLUMN llm_etki TEXT")
+    except Exception:
+        pass  # Sutun zaten varsa sessizce gec
+    try:
+        c.execute("ALTER TABLE talepler ADD COLUMN llm_aciliyet TEXT")
+    except Exception:
+        pass
+    
     # Default kullanıcıları oluştur
     c.execute("SELECT COUNT(*) FROM kullanicilar")
     if c.fetchone()[0] == 0:
@@ -79,9 +92,19 @@ def _init_db():
             INSERT INTO kullanicilar (kullanici_adi, sifre, ad_soyad, rol, birim)
             VALUES (?, ?, ?, ?, ?)
         ''', [
-            ("calisan", "1234", "Ahmet Çalışan", "calisan", "Muhasebe"),
-            ("uzman", "1234", "Mehmet Uzman", "uzman", "IT")
+            ("calisan", "$2b$12$R9h/cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jWMUW", "Ahmet Çalışan", "calisan", "Muhasebe"),
+            ("uzman", "$2b$12$R9h/cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jWMUW", "Mehmet Uzman", "uzman", "IT")
         ])
+
+    # Sla_deadline ve eskalasyon migrasyonu
+    try:
+        c.execute("ALTER TABLE talepler ADD COLUMN sla_deadline TEXT")
+    except sqlite3.OperationalError:
+        pass
+    try:
+        c.execute("ALTER TABLE talepler ADD COLUMN eskalasyon_seviyesi INTEGER DEFAULT 0")
+    except sqlite3.OperationalError:
+        pass
 
     conn.commit()
     conn.close()
@@ -156,11 +179,20 @@ def kullanici_dogrula(kullanici_adi: str, sifre: str) -> Optional[dict]:
     with _lock:
         conn = _get_connection()
         c = conn.cursor()
-        c.execute("SELECT * FROM kullanicilar WHERE kullanici_adi = ? AND sifre = ?", (kullanici_adi, sifre))
+        c.execute("SELECT * FROM kullanicilar WHERE kullanici_adi = ?", (kullanici_adi,))
         row = c.fetchone()
         conn.close()
         if row:
-            return dict(row)
+            d = dict(row)
+            db_pass = d["sifre"]
+            if db_pass == sifre:
+                return d
+            try:
+                from app.auth import verify_password
+                if verify_password(sifre, db_pass):
+                    return d
+            except ImportError:
+                pass
         return None
 
 def kullanici_getir(kullanici_adi: str) -> Optional[dict]:
@@ -191,14 +223,28 @@ def ticket_kaydet(ticket_data: dict) -> str:
             son_no = 1
             
         talep_no = talep_no_olustur(son_no)
-        created_at = datetime.now().isoformat()
+        created_at_dt = datetime.now()
+        created_at = created_at_dt.isoformat()
+        
+        # Calculate SLA Deadline based on ai_oncelik
+        sla_hours = 120 # Default P4
+        ai_oncelik_data = ticket_data.get("ai_oncelik")
+        if ai_oncelik_data:
+            kod = ai_oncelik_data.get("kod", "P4")
+            if kod == "P1": sla_hours = 4
+            elif kod == "P2": sla_hours = 24
+            elif kod == "P3": sla_hours = 72
+            else: sla_hours = 120
+            
+        sla_deadline = (created_at_dt + timedelta(hours=sla_hours)).isoformat()
         
         c.execute('''
             INSERT INTO talepler (
                 talep_no, gonderen_kisi, gonderen_birim, oncelik, mesaj, 
                 kategori, talep_turu, cozum_suresi_gun, maliyet_tl, durum, 
-                created_at, ai_oncelik, yuklenen_dosya, kullanici_adi
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                created_at, ai_oncelik, yuklenen_dosya, kullanici_adi, sla_deadline, eskalasyon_seviyesi,
+                llm_etki, llm_aciliyet
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             talep_no,
             ticket_data.get("gonderen_kisi"),
@@ -211,9 +257,13 @@ def ticket_kaydet(ticket_data: dict) -> str:
             ticket_data.get("tahmini_maliyet_tl", ticket_data.get("maliyet_tl")),
             "bekliyor",
             created_at,
-            json.dumps(ticket_data.get("ai_oncelik")) if ticket_data.get("ai_oncelik") else None,
+            json.dumps(ai_oncelik_data) if ai_oncelik_data else None,
             json.dumps(ticket_data.get("yuklenen_dosya")) if ticket_data.get("yuklenen_dosya") else None,
-            ticket_data.get("kullanici_adi")
+            ticket_data.get("kullanici_adi"),
+            sla_deadline,
+            0,
+            ticket_data.get("llm_etki"),
+            ticket_data.get("llm_aciliyet"),
         ))
         conn.commit()
         conn.close()

@@ -1,0 +1,424 @@
+[
+  {
+    "talep_no": "TKT-0021",
+    "gonderen_kisi": "Ahmet \u00c7al\u0131\u015fan",
+    "gonderen_birim": "Muhasebe",
+    "oncelik": null,
+    "mesaj": "Veritaban\u0131 ba\u011flant\u0131s\u0131 koptu, hi\u00e7bir m\u00fc\u015fteri \u00f6deme yapam\u0131yor",
+    "kategori": "Veritaban\u0131",
+    "talep_turu": "Eri\u015fim Sorunu",
+    "cozum_suresi_gun": 2.7,
+    "maliyet_tl": 3535.0,
+    "durum": "bekliyor",
+    "created_at": "2026-08-26T16:25:31.611757",
+    "tamamlandi_at": null,
+    "gercek_sure_gun": null,
+    "gercek_maliyet_tl": null,
+    "ai_oncelik": {
+      "kod": "P1",
+      "etiket": "Kritik",
+      "ikon": "\ud83d\udd34",
+      "skor": 33.27,
+      "aciklama": "kritik IT kategorisi, acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 18.0,
+        "talep_turu_puani": 9.0,
+        "sure_puani": 3.7,
+        "maliyet_puani": 2,
+        "bekleme_puani": 0.6
+      }
+    },
+    "yuklenen_dosya": null,
+    "kullanici_adi": "calisan",
+    "son_yorum_tarihi": "2026-08-27T11:44:04.916198",
+    "son_yorum_yapan_rol": "uzman",
+    "tahmini_maliyet_tl": 3535.0,
+    "emsal_analizi": null
+  },
+  {
+    "talep_no": "TKT-0008",
+    "gonderen_kisi": "burcu c",
+    "gonderen_birim": "Muhasebe",
+    "oncelik": null,
+    "mesaj": "ekteki belgede sorun bulunmakta",
+    "kategori": "Veritaban\u0131",
+    "talep_turu": "Eri\u015fim Sorunu",
+    "cozum_suresi_gun": 3.2,
+    "maliyet_tl": 2915.0,
+    "durum": "tamamlandi",
+    "created_at": "2026-08-25T15:34:46.960352",
+    "tamamlandi_at": "2026-08-27T10:49:20.435775",
+    "gercek_sure_gun": 3.0,
+    "gercek_maliyet_tl": 5500.0,
+    "ai_oncelik": {
+      "kod": "P1",
+      "etiket": "Kritik",
+      "ikon": "\ud83d\udd34",
+      "skor": 33.01,
+      "aciklama": "kritik IT kategorisi, acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 18.0,
+        "talep_turu_puani": 9.0,
+        "sure_puani": 3.1,
+        "maliyet_puani": 2,
+        "bekleme_puani": 0.9
+      }
+    },
+    "yuklenen_dosya": {
+      "dosya_adi": "hata_logu.txt",
+      "icerik_uzunlugu": 685
+    },
+    "kullanici_adi": null,
+    "son_yorum_tarihi": null,
+    "son_yorum_yapan_rol": null,
+    "tahmini_maliyet_tl": 2915.0
+  },
+  {
+    "talep_no": "TKT-0001",
+    "gonderen_kisi": "Ahmet Yilmaz",
+    "gonderen_birim": "Muhasebe",
+    "oncelik": null,
+    "mesaj": "SAP muhasebe yazilimi acilmiyor, ekranda lisans hatasi veriyor",
+    "kategori": "Yaz\u0131l\u0131m Sorunu",
+    "talep_turu": "Bug / Hata",
+    "cozum_suresi_gun": 3.1,
+    "maliyet_tl": 1036.0,
+    "durum": "bekliyor",
+    "created_at": "2026-08-25T14:30:52.154892",
+    "tamamlandi_at": null,
+    "gercek_sure_gun": null,
+    "gercek_maliyet_tl": null,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.72,
+      "aciklama": "acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 12.0,
+        "talep_turu_puani": 9.6,
+        "sure_puani": 3.2,
+        "maliyet_puani": 1,
+        "bekleme_puani": 0.9
+      }
+    },
+    "yuklenen_dosya": null,
+    "kullanici_adi": null,
+    "son_yorum_tarihi": null,
+    "son_yorum_yapan_rol": null,
+    "tahmini_maliyet_tl": 1036.0,
+    "emsal_analizi": {
+      "adet": 3,
+      "ortalama_sure_gun": 5.0,
+      "ortalama_maliyet_tl": 5000.0,
+      "ortalama_benzerlik": 100.0,
+      "benzer_vakalar": [
+        {
+          "talep_no": "TKT-0011",
+          "mesaj": "sap muhasebe yazilimi acilmiyor ekranda lisans hatasi veriyor...",
+          "benzerlik": 100.0,
+          "sure": 6.0,
+          "maliyet": 6000.0
+        },
+        {
+          "talep_no": "TKT-0006",
+          "mesaj": "sap muhasebe yazilimi acilmiyor ekranda lisans hatasi veriyor...",
+          "benzerlik": 100.0,
+          "sure": 4.0,
+          "maliyet": 4000.0
+        },
+        {
+          "talep_no": "TKT-0004",
+          "mesaj": "sap muhasebe yazilimi acilmiyor ekranda lisans hatasi veriyor...",
+          "benzerlik": 100.0,
+          "sure": 5.0,
+          "maliyet": 5000.0
+        }
+      ]
+    }
+  },
+  {
+    "talep_no": "TKT-0004",
+    "gonderen_kisi": "Test User",
+    "gonderen_birim": "IT",
+    "oncelik": null,
+    "mesaj": "SAP muhasebe yazilimi acilmiyor, ekranda lisans hatasi veriyor",
+    "kategori": "Yaz\u0131l\u0131m Sorunu",
+    "talep_turu": "Bug / Hata",
+    "cozum_suresi_gun": 3.1,
+    "maliyet_tl": 1036.0,
+    "durum": "tamamlandi",
+    "created_at": "2026-08-25T14:59:58.925207",
+    "tamamlandi_at": "2026-08-25T15:01:38.586960",
+    "gercek_sure_gun": 5.0,
+    "gercek_maliyet_tl": 5000.0,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.71,
+      "aciklama": "acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 12.0,
+        "talep_turu_puani": 9.6,
+        "sure_puani": 3.2,
+        "maliyet_puani": 1,
+        "bekleme_puani": 0.9
+      }
+    },
+    "yuklenen_dosya": null,
+    "kullanici_adi": null,
+    "son_yorum_tarihi": null,
+    "son_yorum_yapan_rol": null,
+    "tahmini_maliyet_tl": 1036.0
+  },
+  {
+    "talep_no": "TKT-0006",
+    "gonderen_kisi": "caner c",
+    "gonderen_birim": "Sat\u0131\u015f",
+    "oncelik": null,
+    "mesaj": "SAP muhasebe yazilimi acilmiyor, ekranda lisans hatasi veriyor",
+    "kategori": "Yaz\u0131l\u0131m Sorunu",
+    "talep_turu": "Bug / Hata",
+    "cozum_suresi_gun": 3.2,
+    "maliyet_tl": 1128.0,
+    "durum": "tamamlandi",
+    "created_at": "2026-08-25T15:21:50.953742",
+    "tamamlandi_at": "2026-08-25T16:04:20.090844",
+    "gercek_sure_gun": 4.0,
+    "gercek_maliyet_tl": 4000.0,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.61,
+      "aciklama": "acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 12.0,
+        "talep_turu_puani": 9.6,
+        "sure_puani": 3.1,
+        "maliyet_puani": 1,
+        "bekleme_puani": 0.9
+      }
+    },
+    "yuklenen_dosya": null,
+    "kullanici_adi": null,
+    "son_yorum_tarihi": null,
+    "son_yorum_yapan_rol": null,
+    "tahmini_maliyet_tl": 1128.0
+  },
+  {
+    "talep_no": "TKT-0033",
+    "gonderen_kisi": "Ay\u00e7a Y\u0131ld\u0131z",
+    "gonderen_birim": "M\u00fchendislik",
+    "oncelik": null,
+    "mesaj": "hata al\u0131yorum",
+    "kategori": "Yaz\u0131l\u0131m Sorunu",
+    "talep_turu": "Bug / Hata",
+    "cozum_suresi_gun": 2.5,
+    "maliyet_tl": 1372.0,
+    "durum": "bekliyor",
+    "created_at": "2026-08-28T13:00:48.982998",
+    "tamamlandi_at": null,
+    "gercek_sure_gun": null,
+    "gercek_maliyet_tl": null,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.61,
+      "aciklama": "acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 12.0,
+        "talep_turu_puani": 9.6,
+        "sure_puani": 4.0,
+        "maliyet_puani": 1,
+        "bekleme_puani": 0.0
+      }
+    },
+    "yuklenen_dosya": null,
+    "kullanici_adi": "ayca.y\u0131ld\u0131z",
+    "son_yorum_tarihi": null,
+    "son_yorum_yapan_rol": null,
+    "tahmini_maliyet_tl": 1372.0,
+    "emsal_analizi": {
+      "adet": 1,
+      "ortalama_sure_gun": 1.0,
+      "ortalama_maliyet_tl": 1500.0,
+      "ortalama_benzerlik": 100.0,
+      "benzer_vakalar": [
+        {
+          "talep_no": "TKT-0017",
+          "mesaj": "hata al\u0131yorum...",
+          "benzerlik": 100.0,
+          "sure": 1.0,
+          "maliyet": 1500.0
+        }
+      ]
+    }
+  },
+  {
+    "talep_no": "TKT-0007",
+    "gonderen_kisi": "s s",
+    "gonderen_birim": "Muhasebe",
+    "oncelik": null,
+    "mesaj": "a",
+    "kategori": "Donan\u0131m Ar\u0131zas\u0131",
+    "talep_turu": "\u00d6zellik \u0130ste\u011fi",
+    "cozum_suresi_gun": 3.0,
+    "maliyet_tl": 3486.0,
+    "durum": "bekliyor",
+    "created_at": "2026-08-25T15:32:10.486223",
+    "tamamlandi_at": null,
+    "gercek_sure_gun": null,
+    "gercek_maliyet_tl": null,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.41,
+      "aciklama": "standart \u00f6ncelik",
+      "detay": {
+        "kategori_puani": 16.0,
+        "talep_turu_puani": 4.2,
+        "sure_puani": 3.3,
+        "maliyet_puani": 2,
+        "bekleme_puani": 0.9
+      }
+    },
+    "yuklenen_dosya": null,
+    "kullanici_adi": null,
+    "son_yorum_tarihi": "2026-08-28T12:48:36.210689",
+    "son_yorum_yapan_rol": "uzman",
+    "tahmini_maliyet_tl": 3486.0,
+    "emsal_analizi": null
+  },
+  {
+    "talep_no": "TKT-0013",
+    "gonderen_kisi": "Ali \u00c7elik",
+    "gonderen_birim": "Muhasebe",
+    "oncelik": null,
+    "mesaj": "\u00f6deme ekran\u0131 hata mesaj\u0131 veriyor \r\n",
+    "kategori": "Yaz\u0131l\u0131m Sorunu",
+    "talep_turu": "Bug / Hata",
+    "cozum_suresi_gun": 3.2,
+    "maliyet_tl": 1193.0,
+    "durum": "bekliyor",
+    "created_at": "2026-08-26T09:27:49.498993",
+    "tamamlandi_at": null,
+    "gercek_sure_gun": null,
+    "gercek_maliyet_tl": null,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.38,
+      "aciklama": "acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 12.0,
+        "talep_turu_puani": 9.6,
+        "sure_puani": 3.1,
+        "maliyet_puani": 1,
+        "bekleme_puani": 0.7
+      }
+    },
+    "yuklenen_dosya": null,
+    "kullanici_adi": null,
+    "son_yorum_tarihi": null,
+    "son_yorum_yapan_rol": null,
+    "tahmini_maliyet_tl": 1193.0,
+    "emsal_analizi": null
+  },
+  {
+    "talep_no": "TKT-0017",
+    "gonderen_kisi": "Ahmet \u00c7al\u0131\u015fan",
+    "gonderen_birim": "Muhasebe",
+    "oncelik": null,
+    "mesaj": "hata al\u0131yorum ",
+    "kategori": "Yaz\u0131l\u0131m Sorunu",
+    "talep_turu": "Bug / Hata",
+    "cozum_suresi_gun": 3.2,
+    "maliyet_tl": 1193.0,
+    "durum": "tamamlandi",
+    "created_at": "2026-08-26T11:00:20.436215",
+    "tamamlandi_at": "2026-08-28T13:01:03.145608",
+    "gercek_sure_gun": 1.0,
+    "gercek_maliyet_tl": 1500.0,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.36,
+      "aciklama": "acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 12.0,
+        "talep_turu_puani": 9.6,
+        "sure_puani": 3.1,
+        "maliyet_puani": 1,
+        "bekleme_puani": 0.6
+      }
+    },
+    "yuklenen_dosya": {
+      "dosya_adi": "Ekran g\u00f6r\u00fcnt\u00fcs\u00fc 2026-08-26 105920.png",
+      "icerik_uzunlugu": 0
+    },
+    "kullanici_adi": "calisan",
+    "son_yorum_tarihi": "2026-08-28T09:32:38.642020",
+    "son_yorum_yapan_rol": "calisan",
+    "tahmini_maliyet_tl": 1193.0
+  },
+  {
+    "talep_no": "TKT-0018",
+    "gonderen_kisi": "Ahmet \u00c7al\u0131\u015fan",
+    "gonderen_birim": "Muhasebe",
+    "oncelik": null,
+    "mesaj": "hata",
+    "kategori": "Yaz\u0131l\u0131m Sorunu",
+    "talep_turu": "Bug / Hata",
+    "cozum_suresi_gun": 3.2,
+    "maliyet_tl": 1193.0,
+    "durum": "bekliyor",
+    "created_at": "2026-08-26T11:08:04.630210",
+    "tamamlandi_at": null,
+    "gercek_sure_gun": null,
+    "gercek_maliyet_tl": null,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.36,
+      "aciklama": "acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 12.0,
+        "talep_turu_puani": 9.6,
+        "sure_puani": 3.1,
+        "maliyet_puani": 1,
+        "bekleme_puani": 0.6
+      }
+    },
+    "yuklenen_dosya": {
+      "dosya_adi": "Ekran g\u00f6r\u00fcnt\u00fcs\u00fc 2026-08-26 105920.png",
+      "url": "/uploads/66212b53_Ekran g\u00f6r\u00fcnt\u00fcs\u00fc 2026-08-26 105920.png",
+      "icerik_uzunlugu": 0
+    },
+    "kullanici_adi": "calisan",
+    "son_yorum_tarihi": "2026-08-26T11:14:58.991494",
+    "son_yorum_yapan_rol": "uzman",
+    "tahmini_maliyet_tl": 1193.0,
+    "emsal_analizi": {
+      "adet": 1,
+      "ortalama_sure_gun": 1.0,
+      "ortalama_maliyet_tl": 1500.0,
+      "ortalama_benzerlik": 56.0,
+      "benzer_vakalar": [
+        {
+          "talep_no": "TKT-0017",
+          "mesaj": "hata al\u0131yorum...",
+          "benzerlik": 56.0,
+          "sure": 1.0,
+          "maliyet": 1500.0
+        }
+      ]
+    }
+  }
+]

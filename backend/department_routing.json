@@ -1,12 +1,12 @@
 {
-  "Yazılım Sorunu": "Yazılım Destek Ekibi",
-  "Donanım Arızası": "Donanım / Teknik Servis",
-  "Ağ / Bağlantı": "Ağ Altyapı Ekibi",
-  "Güvenlik / Erişim": "Siber Güvenlik & IAM",
+  "Yazılım Sorunu": "Yazılım Geliştirme",
+  "Donanım Arızası": "Sistem ve Donanım",
+  "Ağ / Bağlantı": "Ağ ve Güvenlik",
+  "Güvenlik / Erişim": "Ağ ve Güvenlik",
   "Veritabanı": "Veritabanı Yönetimi",
-  "E-posta / İletişim": "İletişim Sistemleri",
-  "Yedekleme / Veri": "Veri Yönetimi & Yedekleme",
-  "Lisans / Abonelik": "IT Satın Alma & Lisans",
-  "Mobil Uygulama Geliştirme": "Mobil ve Web Teknolojileri",
+  "E-posta / İletişim": "Genel IT Destek",
+  "Yedekleme / Veri": "Veritabanı Yönetimi",
+  "Lisans / Abonelik": "Genel IT Destek",
+  "Mobil Uygulama Geliştirme": "Yazılım Geliştirme",
   "_default": "Genel IT Destek"
 }

@@ -1,48 +1,48 @@
 """
-Yapay Zeka Tabanli Oncelik Skorlama Motoru
-ITIL v4 prensiplerine dayali cok faktörlü önceliklendirme.
-
-Faktörler:
-  1. IT Kategori aciliyeti  (Güvenlik > DB > Donanim > Yazilim ...)
-  2. Talep turu agirlik     (Bug > Erisim > Donanim > Ozellik ...)
-  3. Tahmini cözüm süresi  (kisa sure = daha acil)
-  4. Maliyet etkisi
-  5. Bekleme süresi bonus   (eskiyen talepler +puan alir)
+ITIL v4 Etki / Aciliyet Matrisi Tabanli Oncelik Skorlama Motoru
+----------------------------------------------------------------
+Yeni mimari:
+  - LLM'den gelen Etki (Impact) ve Aciliyet (Urgency) degerleri
+    standart ITIL 3x3 matrisinde kesistirilir → P1/P2/P3/P4 belirlenir.
+  - LLM cevap veremezse (API hatasi vb.) kural tabanli fallback devreye girer.
+  - Bu mimari sayesinde "sinif basinа kural yazma" sorununa son verilir;
+    yeni hicbir kural eklenmeden binlerce farkli senaryo dogru siniflandirilir.
 """
 
 from datetime import datetime
 
-# Kategori bazlı aciliyet (ITSM best-practice)
-KATEGORI_AGIRLIK = {
-    "Güvenlik / Erişim":  10,
-    "Veritabanı":          9,
-    "Ağ / Bağlantı":       8,
-    "Yazılım Sorunu":      7,
-    "Donanım Arızası":     5,
-    "E-posta / İletişim":  5,
-    "Yedekleme / Veri":    4,
-    "Lisans / Abonelik":   3,
-    "Tasarım / Estetik":   1,
+# ── ITIL 3x3 Etki / Aciliyet Matrisi ──────────────────────────────────────────
+# Satir: Etki (Impact)   | Sutun: Aciliyet (Urgency)
+#        Yüksek  Orta   Düşük
+ITIL_MATRIX = {
+    "Yüksek": {"Yüksek": "P1", "Orta": "P1", "Düşük": "P2"},
+    "Orta":   {"Yüksek": "P1", "Orta": "P2", "Düşük": "P3"},
+    "Düşük":  {"Yüksek": "P2", "Orta": "P3", "Düşük": "P4"},
 }
 
-# Talep türü ağırlıkları
-TALEP_TURU_AGIRLIK = {
-    "Bug / Hata":           1.6,
-    "Erişim Sorunu":        1.5,
-    "İletişim Sorunu":      1.2,
-    "Veri / Yedekleme":     1.1,
-    "Donanım Arızası":      1.1,
-    "Lisans Sorunu":        1.0,
-    "Özellik İsteği":       0.7,
-    "Diğer":                1.0,
+ONCELIK_META = {
+    "P1": {"etiket": "Kritik",  "ikon": "🔴", "skor": 95},
+    "P2": {"etiket": "Yüksek",  "ikon": "🟠", "skor": 70},
+    "P3": {"etiket": "Orta",    "ikon": "🟡", "skor": 40},
+    "P4": {"etiket": "Düşük",   "ikon": "⚪", "skor": 10},
 }
 
-ONCELIK_SEVIYELERI = [
-    ("P1", "Kritik", "🔴", 31),
-    ("P2", "Yüksek", "🟠", 24),
-    ("P3", "Orta",   "🟡", 14),
-    ("P4", "Düşük",  "⚪",  0),
-]
+# ── FALLBACK: Kural Tabanli Sistem (LLM yoksa devreye girer) ──────────────────
+# Kategori → varsayilan Etki/Aciliyet tahmini
+KATEGORI_FALLBACK = {
+    "Güvenlik / Erişim":  ("Yüksek", "Yüksek"),  # Siber tehdit varsayimi
+    "Veritabanı":          ("Yüksek", "Yüksek"),
+    "Ağ / Bağlantı":       ("Yüksek", "Yüksek"),
+    "Yazılım Sorunu":      ("Orta",   "Orta"),
+    "Donanım Arızası":     ("Orta",   "Orta"),
+    "E-posta / İletişim":  ("Orta",   "Orta"),
+    "Yedekleme / Veri":    ("Yüksek", "Orta"),
+    "Lisans / Abonelik":   ("Düşük",  "Orta"),
+    "Mobil Uygulama Geliştirme": ("Düşük", "Düşük"),
+    "Tasarım / Estetik":   ("Düşük",  "Düşük"),
+}
+
+GECERLI_DEGERLER = {"Yüksek", "Orta", "Düşük"}
 
 
 def oncelik_hesapla(
@@ -51,79 +51,68 @@ def oncelik_hesapla(
     tahmini_sure_gun: float,
     tahmini_maliyet_tl: float,
     created_at: str = None,
+    llm_etki: str = None,
+    llm_aciliyet: str = None,
 ) -> dict:
     """
-    Cok faktorlu oncelik skoru hesapla.
-    Sonuc: {kod, etiket, ikon, skor, aciklama, detay}
+    ITIL Etki/Aciliyet Matrisi ile oncelik belirler.
+    
+    1. LLM'den Etki ve Aciliyet geldiyse → dogrudan matrise sok.
+    2. LLM yoksa → kategori bazli fallback tahmin kullan.
+    3. Bekleme bonusu: uzun sure bekleyen biletler bir seviye yukar cikabilir.
     """
-    # 1) Kategori agirlik puani (maks ~20)
-    cat_w = KATEGORI_AGIRLIK.get(kategori, 5)
-    kat_puan = cat_w * 2.0
+    kaynak = "itil_matrix"
 
-    # 2) Talep türü puanı (maks ~9.6)
-    type_w = TALEP_TURU_AGIRLIK.get(talep_turu, 1.0)
-    tur_puan = type_w * 6.0
-
-    # 3) Çözüm süresi tersi: kisa sure = yüksek öncelik
-    #    1 gun → 10 puan, 2 gun → 5, 5 gun → 2, 10+ gun → 1
-    sure_puan = min(10.0, 10.0 / max(0.5, float(tahmini_sure_gun)))
-
-    # 4) Maliyet etkisi (0-4 puan)
-    if tahmini_maliyet_tl >= 10000:
-        maliyet_puan = 4
-    elif tahmini_maliyet_tl >= 5000:
-        maliyet_puan = 3
-    elif tahmini_maliyet_tl >= 2000:
-        maliyet_puan = 2
-    elif tahmini_maliyet_tl >= 500:
-        maliyet_puan = 1
+    # Etki / Aciliyet belirleme
+    if llm_etki in GECERLI_DEGERLER and llm_aciliyet in GECERLI_DEGERLER:
+        etki = llm_etki
+        aciliyet = llm_aciliyet
+        kaynak = "llm"
     else:
-        maliyet_puan = 0
+        # Fallback: kategori bazli varsayim
+        fallback = KATEGORI_FALLBACK.get(kategori, ("Orta", "Orta"))
+        etki, aciliyet = fallback
+        kaynak = "fallback"
 
-    # 5) Bekleme bonusu (maks +5)
-    bekle_puan = 0.0
+    # ITIL matrisinden oncelik kodu al
+    oncelik_kod = ITIL_MATRIX.get(etki, {}).get(aciliyet, "P3")
+
+    # Bekleme bonusu: 3+ gun bekleyen P3/P4 biletler bir seviye yukari ciksin
+    bekle_gun = 0.0
     if created_at:
         try:
             olusturulma = datetime.fromisoformat(created_at)
-            bekleme_gun = (datetime.now() - olusturulma).total_seconds() / 86400
-            bekle_puan = min(5.0, bekleme_gun * 0.3)
+            bekle_gun = (datetime.now() - olusturulma).total_seconds() / 86400
         except Exception:
             pass
 
-    skor = kat_puan + tur_puan + sure_puan + maliyet_puan + bekle_puan
+    if bekle_gun >= 3:
+        yukaridan = {"P4": "P3", "P3": "P2"}
+        if oncelik_kod in yukaridan:
+            oncelik_kod = yukaridan[oncelik_kod]
 
-    # Etiket belirle
-    oncelik_kod, oncelik_etiket, oncelik_ikon = "P4", "Düşük", "⚪"
-    for kod, etiket, ikon, esik in ONCELIK_SEVIYELERI:
-        if skor >= esik:
-            oncelik_kod, oncelik_etiket, oncelik_ikon = kod, etiket, ikon
-            break
+    meta = ONCELIK_META[oncelik_kod]
 
-    if kategori == "Tasarım / Estetik":
-        oncelik_kod, oncelik_etiket, oncelik_ikon = "P4", "Düşük", "⚪"
-
-    # Açıklama mesajı
-    parcalar = []
-    if cat_w >= 9:
-        parcalar.append("kritik IT kategorisi")
-    if type_w >= 1.4:
-        parcalar.append("acil talep türü")
-    if tahmini_sure_gun <= 2:
-        parcalar.append(f"{tahmini_sure_gun:.1f} günlük kısa çözüm")
-    if bekle_puan >= 2:
-        parcalar.append("uzun süredir bekliyor")
+    aciklama_parcalar = []
+    if etki == "Yüksek":
+        aciklama_parcalar.append("yüksek iş etkisi")
+    if aciliyet == "Yüksek":
+        aciklama_parcalar.append("yüksek aciliyet")
+    if bekle_gun >= 3:
+        aciklama_parcalar.append(f"{bekle_gun:.0f} gündür bekliyor")
+    if kaynak == "fallback":
+        aciklama_parcalar.append("otomat. kategori tahmini")
 
     return {
-        "kod": oncelik_kod,
-        "etiket": oncelik_etiket,
-        "ikon": oncelik_ikon,
-        "skor": round(skor, 2),
-        "aciklama": ", ".join(parcalar) if parcalar else "standart öncelik",
+        "kod":     oncelik_kod,
+        "etiket":  meta["etiket"],
+        "ikon":    meta["ikon"],
+        "skor":    meta["skor"],
+        "aciklama": ", ".join(aciklama_parcalar) if aciklama_parcalar else "standart öncelik",
         "detay": {
-            "kategori_puani":    round(kat_puan, 1),
-            "talep_turu_puani":  round(tur_puan, 1),
-            "sure_puani":        round(sure_puan, 1),
-            "maliyet_puani":     maliyet_puan,
-            "bekleme_puani":     round(bekle_puan, 1),
+            "etki":      etki,
+            "aciliyet":  aciliyet,
+            "kaynak":    kaynak,
+            "bekleme_gun": round(bekle_gun, 1),
         },
     }

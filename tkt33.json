@@ -1,0 +1,52 @@
+[
+  {
+    "talep_no": "TKT-0033",
+    "gonderen_kisi": "Ay\u00e7a Y\u0131ld\u0131z",
+    "gonderen_birim": "M\u00fchendislik",
+    "oncelik": null,
+    "mesaj": "hata al\u0131yorum",
+    "kategori": "Yaz\u0131l\u0131m Sorunu",
+    "talep_turu": "Bug / Hata",
+    "cozum_suresi_gun": 2.5,
+    "maliyet_tl": 1372.0,
+    "durum": "bekliyor",
+    "created_at": "2026-08-28T13:00:48.982998",
+    "tamamlandi_at": null,
+    "gercek_sure_gun": null,
+    "gercek_maliyet_tl": null,
+    "ai_oncelik": {
+      "kod": "P2",
+      "etiket": "Y\u00fcksek",
+      "ikon": "\ud83d\udfe0",
+      "skor": 26.61,
+      "aciklama": "acil talep t\u00fcr\u00fc",
+      "detay": {
+        "kategori_puani": 12.0,
+        "talep_turu_puani": 9.6,
+        "sure_puani": 4.0,
+        "maliyet_puani": 1,
+        "bekleme_puani": 0.0
+      }
+    },
+    "yuklenen_dosya": null,
+    "kullanici_adi": "ayca.y\u0131ld\u0131z",
+    "son_yorum_tarihi": null,
+    "son_yorum_yapan_rol": null,
+    "tahmini_maliyet_tl": 1372.0,
+    "emsal_analizi": {
+      "adet": 1,
+      "ortalama_sure_gun": 1.0,
+      "ortalama_maliyet_tl": 1500.0,
+      "ortalama_benzerlik": 100.0,
+      "benzer_vakalar": [
+        {
+          "talep_no": "TKT-0017",
+          "mesaj": "hata al\u0131yorum...",
+          "benzerlik": 100.0,
+          "sure": 1.0,
+          "maliyet": 1500.0
+        }
+      ]
+    }
+  }
+]

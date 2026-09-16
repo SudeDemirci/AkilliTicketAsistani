@@ -37,28 +37,39 @@
 
 <!-- ── LOGIN VIEW ────────────────────────────────────────────── -->
 <div class="view active" id="view-login">
-  <div class="login-container">
-    <div class="login-card">
-      <div class="login-header">
-        <svg width="48" height="48" viewBox="0 0 28 28" fill="none">
+  <div class="login-container" style="display:flex; justify-content:center; align-items:center; min-height:80vh;">
+    <div class="login-card" style="background:#fff; padding:40px; border-radius:12px; box-shadow:0 10px 25px rgba(0,0,0,0.05); text-align:center; width:100%; max-width:400px; border:1px solid #e2e8f0;">
+      <div class="login-header" style="margin-bottom:30px;">
+        <svg width="56" height="56" viewBox="0 0 28 28" fill="none" style="margin:0 auto 15px auto; display:block;">
           <rect width="28" height="28" rx="8" fill="#1e293b"/>
           <path d="M8 14h12M14 8v12" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
         </svg>
-        <h1>Sisteme Giriş</h1>
-        <p>Albaraka IT Destek Platformu</p>
+        <h1 style="font-size:1.5rem; color:#0f172a; margin-bottom:5px;">Kurumsal Giriş</h1>
+        <p style="color:#64748b; font-size:0.9rem;">ITSM Destek Platformu</p>
       </div>
-      <form id="login-form" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label>Kullanıcı Adı</label>
-          <input type="text" id="login-user" placeholder="Örn: calisan veya uzman" required />
-        </div>
-        <div class="form-group">
-          <label>Şifre</label>
-          <input type="password" id="login-pass" placeholder="****" required />
-        </div>
-        <div class="login-error" id="login-error" style="display:none; color:red; font-size:13px; margin-bottom:10px;">Hatalı giriş!</div>
-        <button type="submit" class="submit-btn" style="width:100%">Giriş Yap</button>
-      </form>
+      
+      <button style="width:100%; background:#fff; border:1px solid #cbd5e1; padding:12px; border-radius:8px; display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; font-weight:600; color:#334155; margin-bottom:20px; transition:all 0.2s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'" onclick="document.getElementById('classic-login').style.display='block'; this.style.display='none';">
+        <svg width="20" height="20" viewBox="0 0 21 21"><path fill="#f25022" d="M1 1h9v9H1z"/><path fill="#00a4ef" d="M1 11h9v9H1z"/><path fill="#7fba00" d="M11 1h9v9h-9z"/><path fill="#ffb900" d="M11 11h9v9h-9z"/></svg>
+        Microsoft (SSO) ile Giriş Yap
+      </button>
+
+      <div id="classic-login" style="display:none; text-align:left;">
+        <div style="text-align:center; margin-bottom:15px; color:#94a3b8; font-size:0.85rem;">veya kurum kimliğiniz ile</div>
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label>Kurumsal E-posta / Kullanıcı Adı</label>
+            <input type="text" id="login-user" placeholder="örn: calisan veya uzman" required style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; margin-top:5px; margin-bottom:15px;" />
+          </div>
+          <div class="form-group">
+            <label>Şifre</label>
+            <input type="password" id="login-pass" placeholder="****" required style="width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:6px; margin-top:5px; margin-bottom:15px;" />
+          </div>
+          <div class="login-error" id="login-error" style="display:none; color:#ef4444; font-size:13px; margin-bottom:10px; text-align:center;">Hatalı giriş!</div>
+          <button type="submit" class="submit-btn" style="width:100%; background:#2563eb; color:white; border:none; padding:12px; border-radius:8px; font-weight:600; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='#1d4ed8'" onmouseout="this.style.background='#2563eb'">
+            Giriş Yap
+          </button>
+        </form>
+      </div>
     </div>
   </div>
 </div>
@@ -178,60 +189,108 @@
     </button>
   </div>
 
-  <!-- İstatistik Barı -->
-  <div class="stats-bar">
-    <div class="stat-item">
-      <span class="stat-number" id="stat-total">—</span>
-      <span class="stat-label">Toplam</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item">
-      <span class="stat-number p1-color" id="stat-p1">—</span>
-      <span class="stat-label">🔴 P1 Kritik</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number p2-color" id="stat-p2">—</span>
-      <span class="stat-label">🟠 P2 Yüksek</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number p3-color" id="stat-p3">—</span>
-      <span class="stat-label">🟡 P3 Orta</span>
-    </div>
-    <div class="stat-item">
-      <span class="stat-number p4-color" id="stat-p4">—</span>
-      <span class="stat-label">⚪ P4 Düşük</span>
-    </div>
-    <button class="refresh-btn" onclick="loadTickets()" title="Yenile">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
-    </button>
-  </div>
+  <div class="expert-layout">
+    <!-- Sol: Departman / Birim Menüsü -->
+    <aside class="expert-sidebar">
+      <div class="sidebar-header">
+        <h2>Birimler</h2>
+      </div>
+      <div class="sidebar-menu" id="department-menu">
+        <button class="sidebar-item active" data-dept="all" onclick="filterByDepartment(this, 'all')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span class="sidebar-text">Tüm Talepler</span>
+          <span class="sidebar-badge" id="badge-all">0</span>
+        </button>
+        <button class="sidebar-item" data-dept="Genel IT Destek" onclick="filterByDepartment(this, 'Genel IT Destek')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <span class="sidebar-text">Genel IT Destek</span>
+          <span class="sidebar-badge" id="badge-Genel IT Destek">0</span>
+        </button>
+        <button class="sidebar-item" data-dept="Yazılım Geliştirme" onclick="filterByDepartment(this, 'Yazılım Geliştirme')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+          <span class="sidebar-text">Yazılım Geliştirme</span>
+          <span class="sidebar-badge" id="badge-Yazılım Geliştirme">0</span>
+        </button>
+        <button class="sidebar-item" data-dept="Sistem ve Donanım" onclick="filterByDepartment(this, 'Sistem ve Donanım')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg>
+          <span class="sidebar-text">Sistem ve Donanım</span>
+          <span class="sidebar-badge" id="badge-Sistem ve Donanım">0</span>
+        </button>
+        <button class="sidebar-item" data-dept="Ağ ve Güvenlik" onclick="filterByDepartment(this, 'Ağ ve Güvenlik')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          <span class="sidebar-text">Ağ ve Güvenlik</span>
+          <span class="sidebar-badge" id="badge-Ağ ve Güvenlik">0</span>
+        </button>
+        <button class="sidebar-item" data-dept="Veritabanı Yönetimi" onclick="filterByDepartment(this, 'Veritabanı Yönetimi')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          <span class="sidebar-text">Veritabanı Yönetimi</span>
+          <span class="sidebar-badge" id="badge-Veritabanı Yönetimi">0</span>
+        </button>
+      </div>
+    </aside>
 
-  <!-- Filtre & Durum -->
-  <div class="expert-toolbar">
-    <div class="filter-group">
-      <button class="filter-btn active" data-filter="all" onclick="filterTickets(this, 'all')">Tümü</button>
-      <button class="filter-btn" data-filter="P1" onclick="filterTickets(this, 'P1')">🔴 P1</button>
-      <button class="filter-btn" data-filter="P2" onclick="filterTickets(this, 'P2')">🟠 P2</button>
-      <button class="filter-btn" data-filter="P3" onclick="filterTickets(this, 'P3')">🟡 P3</button>
-      <button class="filter-btn" data-filter="P4" onclick="filterTickets(this, 'P4')">⚪ P4</button>
-    </div>
-    <div class="status-filter">
-      <label class="toggle-label">
-        <input type="checkbox" id="show-done" onchange="loadTickets()" />
-        Tamamlananları göster
-      </label>
-    </div>
-  </div>
+    <!-- Sağ: İçerik Alanı -->
+    <div class="expert-main-content">
+      <div class="expert-content-header">
+        <h1 id="current-department-title">Tüm Talepler</h1>
+      </div>
 
-  <!-- Ticket Listesi -->
-  <div class="ticket-list" id="ticket-list">
-    <div class="list-loading" id="list-loading">
-      <div class="spinner"></div>
-      <span>Talepler yükleniyor...</span>
-    </div>
-    <div class="list-empty" id="list-empty" style="display:none">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-      <p>Henüz talep bulunmuyor.</p>
+      <!-- İstatistik Barı -->
+      <div class="stats-bar">
+        <div class="stat-item">
+          <span class="stat-number" id="stat-total">—</span>
+          <span class="stat-label">Toplam</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-number p1-color" id="stat-p1">—</span>
+          <span class="stat-label">🔴 P1 Kritik</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number p2-color" id="stat-p2">—</span>
+          <span class="stat-label">🟠 P2 Yüksek</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number p3-color" id="stat-p3">—</span>
+          <span class="stat-label">🟡 P3 Orta</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number p4-color" id="stat-p4">—</span>
+          <span class="stat-label">⚪ P4 Düşük</span>
+        </div>
+        <button class="refresh-btn" onclick="loadTickets()" title="Yenile">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+        </button>
+      </div>
+
+      <!-- Filtre & Durum -->
+      <div class="expert-toolbar">
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter="all" onclick="filterTickets(this, 'all')">Tümü</button>
+          <button class="filter-btn" data-filter="P1" onclick="filterTickets(this, 'P1')">🔴 P1</button>
+          <button class="filter-btn" data-filter="P2" onclick="filterTickets(this, 'P2')">🟠 P2</button>
+          <button class="filter-btn" data-filter="P3" onclick="filterTickets(this, 'P3')">🟡 P3</button>
+          <button class="filter-btn" data-filter="P4" onclick="filterTickets(this, 'P4')">⚪ P4</button>
+        </div>
+        <div class="status-filter">
+          <label class="toggle-label">
+            <input type="checkbox" id="show-done" onchange="loadTickets()" />
+            Tamamlananları göster
+          </label>
+        </div>
+      </div>
+
+      <!-- Ticket Listesi -->
+      <div class="ticket-list" id="ticket-list">
+        <div class="list-loading" id="list-loading">
+          <div class="spinner"></div>
+          <span>Talepler yükleniyor...</span>
+        </div>
+        <div class="list-empty" id="list-empty" style="display:none">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <p>Henüz talep bulunmuyor.</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>

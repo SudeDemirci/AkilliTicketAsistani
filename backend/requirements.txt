@@ -12,3 +12,5 @@ aiofiles==23.2.1
 google-genai
 python-dotenv
 sentence-transformers==3.0.1
+PyJWT==2.8.0
+passlib[bcrypt]==1.7.4

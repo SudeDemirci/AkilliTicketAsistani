@@ -1,8 +1,3 @@
-"""
-Tahmin Motoru
-Yüklenmiş modeller üzerinden gerçek zamanlı tahmin yapar.
-Stats tracker ile gerçek şirket verisi blended tahmine katılır.
-"""
 
 import os
 import re
@@ -94,20 +89,24 @@ class TahminMotoru:
         birlesik = girti_birlestir(gonderen_birim, oncelik, mesaj, ek_icerik)
 
         # Kategori tahmini
-        # Önce yeni nesil LLM (Gemini) ile tahmin etmeyi deniyoruz.
-        from app.llm_router import predict_category_with_llm
-        llm_kategori = predict_category_with_llm(gonderen_birim, oncelik, mesaj)
+        # Önce yeni nesil LLM (Gemini) ile Kategori + Etki + Aciliyet al (ITIL Matrisi için)
+        from app.llm_router import predict_with_llm
+        llm_sonuc = predict_with_llm(gonderen_birim, oncelik, mesaj, ek_icerik)
         
         # Olasılıklar vs ML modelinden hesaplanmaya devam ediyor
         proba = self.kategori_pipeline.predict_proba([birlesik])[0]
         siniflar = self.kategori_pipeline.classes_
         
-        if llm_kategori:
-            kategori = llm_kategori
+        if llm_sonuc.get("kategori"):
+            kategori = llm_sonuc["kategori"]
             guven_skoru = 0.99  # LLM kararlarına yüksek güven veriyoruz
         else:
             kategori = self.kategori_pipeline.predict([birlesik])[0]
             guven_skoru = float(max(proba))
+
+        # ITIL Etki / Aciliyet değerlerini LLM'den al (yoksa None → fallback)
+        llm_etki = llm_sonuc.get("etki")       # "Yüksek" / "Orta" / "Düşük" / None
+        llm_aciliyet = llm_sonuc.get("aciliyet")  # "Yüksek" / "Orta" / "Düşük" / None
 
         # Top-3 kategori (ML modeline göre alternatifler)
         top3_idx = np.argsort(proba)[::-1][:3]
@@ -154,6 +153,8 @@ class TahminMotoru:
             "guven_skoru": round(guven_skoru, 3),
             "alternatif_kategoriler": alternatif_kategoriler,
             "ogrenme_durumu": ogrenme_meta,
+            "llm_etki": llm_etki,        # ITIL Impact: "Yüksek" / "Orta" / "Düşük" / None
+            "llm_aciliyet": llm_aciliyet,  # ITIL Urgency: "Yüksek" / "Orta" / "Düşük" / None
             "girdi": {
                 "gonderen_kisi": gonderen_kisi,
                 "gonderen_birim": gonderen_birim,
@@ -237,9 +238,9 @@ class TahminMotoru:
             print(f"[HATA] Semantic Search başarısız: {e}")
             return None
         
-        # TF-IDF benzerlik skorları için eşiği 0.25'e düşürüyoruz. 
-        # Çünkü TF-IDF skorları kelime bazlı olduğu için yoğun embeddinglere göre daha düşüktür.
-        guncel_min_sim = 0.25
+        # TF-IDF benzerlik skorları için eşiği 0.55'e yükseltiyoruz. 
+        # Aksi takdirde "bir", "giriş" gibi ortak kelimeler yüzünden alakasız biletler eşleşiyor.
+        guncel_min_sim = 0.55
         
         top_indexler = []
         for j, skor in enumerate(skorlar):

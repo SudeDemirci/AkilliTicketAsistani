@@ -1,0 +1,16 @@
+{
+  "Guvenlik / Erisim": {
+    "count": 2,
+    "sure_mean": 2.0,
+    "sure_M2": 2.0,
+    "maliyet_mean": 4000.0,
+    "maliyet_M2": 2000000.0
+  },
+  "Veritabani": {
+    "count": 1,
+    "sure_mean": 2.0,
+    "sure_M2": 0.0,
+    "maliyet_mean": 6000.0,
+    "maliyet_M2": 0.0
+  }
+}

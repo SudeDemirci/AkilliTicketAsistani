@@ -32,8 +32,28 @@ function catIcon(k) {
 // ── STATE ──────────────────────────────────────────────────────────────────
 let allTickets   = [];
 let activeFilter = "all";
+let activeDepartmentFilter = "all";
 let activeTalep  = null;  // Modal icin
 let autoRefreshInterval = null;
+
+function getAuthHeaders(extra={}) {
+  const token = localStorage.getItem('token');
+  const headers = { ...extra };
+  if (token) headers['Authorization'] = 'Bearer ' + token;
+  return headers;
+}
+
+function formatSla(iso) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const now = new Date();
+  const diff = d - now;
+  if (diff < 0) return "Süresi Doldu";
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  if (hours > 24) return Math.floor(hours/24) + " gün";
+  return `${hours}s ${mins}d`;
+}
 
 // ── VIEW SWITCH ────────────────────────────────────────────────────────────
 function switchView(view) {
@@ -53,6 +73,8 @@ function switchView(view) {
   
   if (view === "expert") {
     // Restore toolbars for expert
+    document.querySelector(".expert-sidebar").style.display = "flex";
+    document.querySelector(".expert-content-header").style.display = "block";
     document.querySelector(".stats-bar").style.display = "flex";
     document.querySelector(".expert-toolbar").style.display = "flex";
     document.getElementById("employee-back-bar").style.display = "none";
@@ -136,7 +158,11 @@ async function submitTicket(e) {
   if (fileInput.files[0]) form.append("dosya", fileInput.files[0]);
 
   try {
-    const res = await fetch(`${API}/analiz-et`, { method: "POST", body: form });
+    const res = await fetch(`${API}/analiz-et`, { 
+        method: "POST", 
+        body: form,
+        headers: getAuthHeaders()
+    });
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
     renderResult(data);
@@ -179,6 +205,8 @@ function resetForm() {
 function showMyTickets() {
   document.getElementById("view-employee").classList.remove("active");
   document.getElementById("view-expert").classList.add("active");
+  document.querySelector(".expert-sidebar").style.display = "none";
+  document.querySelector(".expert-content-header").style.display = "none";
   document.querySelector(".stats-bar").style.display = "none";
   document.querySelector(".expert-toolbar").style.display = "none";
   document.getElementById("employee-back-bar").style.display = "block";
@@ -200,7 +228,10 @@ async function loadTickets(silent = false) {
     if (currentUser && currentUser.rol === "calisan") {
       url += `?kullanici_adi=${currentUser.kullanici_adi}`;
     }
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { 
+        cache: 'no-store',
+        headers: getAuthHeaders()
+    });
     if (!res.ok) {
         throw new Error("Sunucu " + res.status + " hatasi dondu");
     }
@@ -234,14 +265,43 @@ function filterTickets(btn, filter) {
   renderTickets();
 }
 
+function filterByDepartment(btn, dept) {
+  document.querySelectorAll(".sidebar-item").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  activeDepartmentFilter = dept;
+  document.getElementById("current-department-title").textContent = btn.querySelector('.sidebar-text').textContent;
+  renderTickets();
+}
+
+function updateSidebarBadges(tickets) {
+  const counts = { "all": 0 };
+  tickets.forEach(t => {
+    if (t.durum !== "tamamlandi") {
+      counts["all"]++;
+      const dept = t.yonlendirilen_departman || "Genel IT Destek";
+      counts[dept] = (counts[dept] || 0) + 1;
+    }
+  });
+
+  document.querySelectorAll(".sidebar-badge").forEach(badge => badge.textContent = "0");
+  
+  for (const [dept, count] of Object.entries(counts)) {
+    const badge = document.getElementById("badge-" + dept);
+    if (badge) badge.textContent = count;
+  }
+}
+
 // ── RENDER TICKET LIST ───────────────────────────────────────────────────────
 function renderTickets() {
   const listEl = document.getElementById("ticket-list");
   const empty  = document.getElementById("list-empty");
 
+  updateSidebarBadges(allTickets);
+
   const showDone = document.getElementById("show-done")?.checked;
   const filtered = allTickets.filter(t => {
     if (activeFilter !== "all" && (t.ai_oncelik || {}).kod !== activeFilter) return false;
+    if (activeDepartmentFilter !== "all" && (t.yonlendirilen_departman || "Genel IT Destek") !== activeDepartmentFilter) return false;
     if (!showDone && t.durum === "tamamlandi") return false;
     return true;
   });
@@ -282,6 +342,8 @@ function renderTickets() {
           <span class="tc-turu">${t.talep_turu || "Diğer"}</span>
           <span class="tc-kategori">${icon} ${t.kategori || "—"}</span>
           ${isDone ? '<span class="tc-done-badge">✅ Tamamlandı</span>' : ""}
+          ${(!isDone && t.sla_ihlal && currentUser.rol === 'uzman') ? '<span class="tc-done-badge" style="background:#fef2f2;color:#dc2626;border-color:#fecaca">⚠️ SLA İhlali</span>' : ""}
+          ${(!isDone && !t.sla_ihlal && t.sla_deadline && currentUser.rol === 'uzman') ? '<span class="tc-done-badge" style="background:#f0fdf4;color:#166534;border-color:#bbf7d0">SLA: ' + formatSla(t.sla_deadline) + '</span>' : ""}
         </div>
         <div class="tc-mesaj">${mesajKisa}</div>
         <div class="tc-meta">
@@ -424,7 +486,7 @@ async function saveComplete() {
   try {
     const res = await fetch(`${API}/talep-tamamla`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: getAuthHeaders({ "Content-Type": "application/json" }),
       body: JSON.stringify({ talep_no: activeTalep, gercek_sure_gun: sure, gercek_maliyet_tl: maliyet }),
     });
     if (!res.ok) throw new Error(await res.text());
@@ -474,6 +536,7 @@ async function handleLogin(e) {
     if (!res.ok) throw new Error();
     const data = await res.json();
     currentUser = data.user;
+    localStorage.setItem('token', data.token);
     
     document.getElementById("login-error").style.display = "none";
     document.getElementById("user-info").textContent = "Hoş geldin, " + currentUser.ad_soyad;
@@ -497,6 +560,7 @@ async function handleLogin(e) {
 
 function handleLogout() {
   currentUser = null;
+  localStorage.removeItem('token');
   document.getElementById("user-info").style.display = "none";
   document.getElementById("btn-logout").style.display = "none";
   
@@ -525,7 +589,10 @@ async function loadThread(talepNo) {
   const container = document.getElementById("thread-messages");
   container.innerHTML = '<div class="spinner-sm"></div>';
   try {
-    const res = await fetch(`${API}/talep/${talepNo}/yorum`, { cache: 'no-store' });
+    const res = await fetch(`${API}/talep/${talepNo}/yorum`, { 
+        cache: 'no-store',
+        headers: getAuthHeaders()
+    });
     const yorumlar = await res.json();
     container.innerHTML = "";
     if (yorumlar.length === 0) {
@@ -566,7 +633,7 @@ async function submitComment(e) {
   try {
     await fetch(`${API}/talep/${activeTalep}/yorum`, {
       method: "POST",
-      headers: {"Content-Type": "application/json"},
+      headers: getAuthHeaders({"Content-Type": "application/json"}),
       body: JSON.stringify({
         talep_no: activeTalep,
         yazar_adi: currentUser.ad_soyad,
@@ -576,6 +643,7 @@ async function submitComment(e) {
     });
     await loadThread(activeTalep);
   } catch(err) {
-    alert("Hata");
+    console.error(err);
+    alert("Hata: " + err.message);
   }
 }

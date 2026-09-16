@@ -1,0 +1,57 @@
+[
+  {
+    "talep_no": "TKT-0088",
+    "mesaj": "Sunucu odasında yangın çıktı, hiçbir sisteme erişilemiyor!",
+    "beklenen_kategori": "Donanım Arızası",
+    "gerceklesen_kategori": "Donanım Arızası",
+    "beklenen_oncelik": "P1",
+    "gerceklesen_oncelik": "P1",
+    "sure": 8.1,
+    "maliyet": 9926.0,
+    "chat_status": "Başarılı"
+  },
+  {
+    "talep_no": "TKT-0089",
+    "mesaj": "Yeni başlayan personel için VPN yetkisi tanımlar mısınız?",
+    "beklenen_kategori": "Güvenlik / Erişim",
+    "gerceklesen_kategori": "Güvenlik / Erişim",
+    "beklenen_oncelik": "P4",
+    "gerceklesen_oncelik": "P4",
+    "sure": 2.4,
+    "maliyet": 4807.0,
+    "chat_status": "Başarılı"
+  },
+  {
+    "talep_no": "TKT-0090",
+    "mesaj": "Sipariş veritabanı bağlantısı koptu, HikariPool hatası alıyoruz, acil müdahale lazım.",
+    "beklenen_kategori": "Veritabanı",
+    "gerceklesen_kategori": "Veritabanı",
+    "beklenen_oncelik": "P1",
+    "gerceklesen_oncelik": "P1",
+    "sure": 3.5,
+    "maliyet": 7264.0,
+    "chat_status": "Başarılı"
+  },
+  {
+    "talep_no": "TKT-0091",
+    "mesaj": "Mobil uygulamanın ana menüsündeki renk çok soluk, daha yeşil bir ton olabilir mi?",
+    "beklenen_kategori": "Tasarım / Estetik",
+    "gerceklesen_kategori": "Tasarım / Estetik",
+    "beklenen_oncelik": "P4",
+    "gerceklesen_oncelik": "P4",
+    "sure": 2.2,
+    "maliyet": 3330.0,
+    "chat_status": "Başarılı"
+  },
+  {
+    "talep_no": "TKT-0092",
+    "mesaj": "Depo yazılımında yeni bir butona basınca donuyor, çok yavaş çalışıyor.",
+    "beklenen_kategori": "Yazılım Sorunu",
+    "gerceklesen_kategori": "Yazılım Sorunu",
+    "beklenen_oncelik": "P2",
+    "gerceklesen_oncelik": "P2",
+    "sure": 3.5,
+    "maliyet": 4323.0,
+    "chat_status": "Başarılı"
+  }
+]

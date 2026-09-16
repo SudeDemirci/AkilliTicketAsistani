@@ -10,6 +10,7 @@ import uuid
 import asyncio
 import io
 from typing import Optional
+from datetime import datetime
 
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
     import io as _io
@@ -17,8 +18,9 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
     sys.stderr = _io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks
+from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from app.auth import create_access_token, get_current_user
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -158,13 +160,15 @@ async def _dosya_oku(icerik: bytes, dosya_adi: str) -> str:
 
 
 def _sonuca_oncelik_ekle(sonuc: dict, talep_turu: str, created_at: str = None) -> dict:
-    """Analiz sonucuna AI oncelik skoru ekler."""
+    """Analiz sonucuna AI oncelik skoru ekler — ITIL Etki/Aciliyet Matrisi kullanir."""
     oncelik = oncelik_hesapla(
         kategori=sonuc["kategori"],
         talep_turu=talep_turu,
         tahmini_sure_gun=sonuc["cozum_suresi_gun"],
         tahmini_maliyet_tl=sonuc["tahmini_maliyet_tl"],
         created_at=created_at,
+        llm_etki=sonuc.get("llm_etki"),        # ITIL Impact (LLM'den)
+        llm_aciliyet=sonuc.get("llm_aciliyet"), # ITIL Urgency (LLM'den)
     )
     sonuc["ai_oncelik"] = oncelik
     sonuc["talep_turu"] = talep_turu
@@ -241,7 +245,11 @@ def login(girdi: LoginGirdi):
     if not user:
         raise HTTPException(status_code=401, detail="Hatalı kullanıcı adı veya şifre")
     print(f"--- LOGIN SUCCESS ---", flush=True)
-    return {"token": girdi.kullanici_adi, "user": user} # Simüle edilmiş token
+    
+    access_token = create_access_token(
+        data={"sub": user["kullanici_adi"], "rol": user["rol"], "ad_soyad": user["ad_soyad"], "birim": user["birim"]}
+    )
+    return {"token": access_token, "user": user}
 
 @app.get("/kullanici/{kullanici_adi}", tags=["Auth"])
 async def get_kullanici(kullanici_adi: str):
@@ -272,6 +280,7 @@ async def ticket_analiz(
     talep_turu:     str = Form("Diger"),
     kullanici_adi:  Optional[str] = Form(None),
     dosya: Optional[UploadFile] = File(None),
+    current_user: dict = Depends(get_current_user),
 ):
     if not tahmin_motoru.hazir_mi():
         raise HTTPException(status_code=503, detail="Modeller hazir degil.")
@@ -326,6 +335,8 @@ async def ticket_analiz(
         "ai_oncelik":          sonuc["ai_oncelik"],
         "yuklenen_dosya":      dosya_bilgisi,
         "kullanici_adi":       kullanici_adi,
+        "llm_etki":            sonuc.get("llm_etki"),      # ITIL Impact - DB'ye kaydet
+        "llm_aciliyet":        sonuc.get("llm_aciliyet"),  # ITIL Urgency - DB'ye kaydet
     })
     sonuc["talep_no"] = talep_no
     
@@ -372,7 +383,7 @@ def ticket_analiz_json(girdi: TicketGirdi):
 
 @app.get("/talepler", tags=["Biletler"])
 @app.get("/biletleri-getir", tags=["Biletler"])
-def talepler_listele(durum: Optional[str] = None, kullanici_adi: Optional[str] = None):
+def talepler_listele(durum: Optional[str] = None, kullanici_adi: Optional[str] = None, current_user: dict = Depends(get_current_user)):
     """
     Tum talepleri AI oncelik skoruna gore sirali dondurur.
     durum: 'bekliyor' | 'tamamlandi' | None (hepsi)
@@ -383,14 +394,34 @@ def talepler_listele(durum: Optional[str] = None, kullanici_adi: Optional[str] =
     # created_at ile bekleme bonusu guncel hale getirilsin
     # ve aktif biletler icin NLP tabanli emsal analizi hesaplansin
     gecmis_biletler = [t for t in talepler if t.get("durum") == "tamamlandi"]
+    
+    now_str = datetime.now().isoformat()
+
+    # Load routing for dynamic assignment
+    routing_file = os.path.join(BASE_DIR, "department_routing.json")
+    dept_map = {}
+    if os.path.exists(routing_file):
+        with open(routing_file, "r", encoding="utf-8") as f:
+            dept_map = json.load(f)
+    default_dept = dept_map.get("_default", "Genel IT Destek")
 
     for t in talepler:
+        t["yonlendirilen_departman"] = dept_map.get(t.get("kategori"), default_dept)
+        if t.get("sla_deadline") and t.get("durum") == "bekliyor":
+            if now_str > t["sla_deadline"]:
+                t["sla_ihlal"] = True
+            else:
+                t["sla_ihlal"] = False
+                
         guncel = oncelik_hesapla(
             kategori=t.get("kategori", ""),
             talep_turu=t.get("talep_turu", "Diger"),
             tahmini_sure_gun=t.get("cozum_suresi_gun", 5),
             tahmini_maliyet_tl=t.get("tahmini_maliyet_tl", 500),
             created_at=t.get("created_at"),
+            # Saklanan LLM degerlerini kullan (varsa). Yoksa fallback devreye girer.
+            llm_etki=t.get("llm_etki"),
+            llm_aciliyet=t.get("llm_aciliyet"),
         )
         t["ai_oncelik"] = guncel
 
@@ -431,7 +462,7 @@ async def talep_getir(talep_no: str):
 
 
 @app.post("/talep-tamamla", tags=["Talepler"])
-async def talep_tamamla_endpoint(girdi: TamamlaGirdi):
+async def talep_tamamla_endpoint(girdi: TamamlaGirdi, current_user: dict = Depends(get_current_user)):
     """
     Talep tamamlandi olarak isaretlenir.
     Gercek sure ve maliyet yigilimli ogrenmede kullanilir.
