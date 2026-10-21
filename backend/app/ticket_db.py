@@ -115,24 +115,34 @@ def _migrate_from_json():
 
     conn = _get_connection()
     c = conn.cursor()
-    c.execute("SELECT COUNT(*) FROM talepler")
-    if c.fetchone()[0] > 0:
-        conn.close()
-        return
 
     try:
         with open(JSON_DB_PATH, encoding="utf-8") as f:
             data = json.load(f)
             
         talepler = data.get("talepler", {})
+        yeni_eklenen = 0
         for talep_no, t in talepler.items():
+            c.execute("SELECT 1 FROM talepler WHERE talep_no = ?", (talep_no,))
+            if c.fetchone():
+                continue
+                
+            ai_onc = t.get("ai_oncelik")
+            if ai_onc and not isinstance(ai_onc, str):
+                ai_onc = json.dumps(ai_onc)
+                
+            yuk_dos = t.get("yuklenen_dosya")
+            if yuk_dos and not isinstance(yuk_dos, str):
+                yuk_dos = json.dumps(yuk_dos)
+
             c.execute('''
                 INSERT INTO talepler (
                     talep_no, gonderen_kisi, gonderen_birim, oncelik, mesaj, 
                     kategori, talep_turu, cozum_suresi_gun, maliyet_tl, durum, 
                     created_at, tamamlandi_at, gercek_sure_gun, gercek_maliyet_tl, 
-                    ai_oncelik, yuklenen_dosya, kullanici_adi
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    ai_oncelik, yuklenen_dosya, kullanici_adi, sla_deadline, eskalasyon_seviyesi,
+                    llm_etki, llm_aciliyet
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 t.get("talep_no"),
                 t.get("gonderen_kisi"),
@@ -148,12 +158,19 @@ def _migrate_from_json():
                 t.get("tamamlandi_at"),
                 t.get("gercek_sure_gun"),
                 t.get("gercek_maliyet_tl"),
-                json.dumps(t.get("ai_oncelik")) if t.get("ai_oncelik") else None,
-                json.dumps(t.get("yuklenen_dosya")) if t.get("yuklenen_dosya") else None,
-                "calisan"
+                ai_onc,
+                yuk_dos,
+                t.get("kullanici_adi", "calisan"),
+                t.get("sla_deadline"),
+                t.get("eskalasyon_seviyesi", 0),
+                t.get("llm_etki"),
+                t.get("llm_aciliyet")
             ))
+            yeni_eklenen += 1
+            
         conn.commit()
-        print("[MIGRATION] Mevcut biletler basariyla SQLite veritabanina aktarildi!")
+        if yeni_eklenen > 0:
+            print(f"[MIGRATION] {yeni_eklenen} yeni bilet basariyla SQLite veritabanina aktarildi!")
     except Exception as e:
         print(f"[MIGRATION HATA] {e}")
     finally:

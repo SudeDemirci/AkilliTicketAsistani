@@ -15,7 +15,6 @@ build/
 # Project specifics
 backend/models/*.pkl
 backend/data/tickets.csv
-backend/data/tickets.db
 backend/data/embeddings_cache.json
 backend/data/uploads/*
 !backend/data/uploads/.gitkeep
