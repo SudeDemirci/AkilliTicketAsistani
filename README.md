@@ -168,7 +168,7 @@ AkıllıTicketAsistanı/
 
 ---
 
-## 💻 Teknoloji Yığını
+##  Teknoloji Yığını
 
 - **Backend:** Python 3.11, FastAPI, Uvicorn, Pydantic v2, PyJWT, Passlib (bcrypt), SQLite
 - **Yapay Zeka / ML:** Scikit-learn, Pandas, NumPy, Joblib, Google GenAI (Gemini)
