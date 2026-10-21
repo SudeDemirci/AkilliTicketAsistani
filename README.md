@@ -46,38 +46,46 @@ AkıllıTicketAsistanı/
 
 ---
 
-##  Hızlı Başlangıç
+## 🚀 Hızlı Başlangıç
 
-### Yöntem 1: Docker Compose (Önerilen)
+### Yöntem 1: Yerel Çalıştırma (Önerilen)
+
+Backend dizininde tek bir komutla hem API servisini hem de web arayüzünü başlatabilirsiniz:
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate          # Windows (Mac/Linux: source venv/bin/activate)
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+Tarayıcıdan doğrudan erişim:
+- 🌐 **Web Arayüzü:** [http://localhost:8000](http://localhost:8000)
+- 📚 **Swagger API Dokümantasyonu:** [http://localhost:8000/docs](http://localhost:8000/docs)
+- 🩺 **Servis Sağlık Durumu:** [http://localhost:8000/saglik](http://localhost:8000/saglik)
+
+---
+
+### 🔑 Demo Giriş Hesapları
+
+| Rol | Kullanıcı Adı | Şifre | Yetki ve İşlevler |
+|---|---|---|---|
+| **Çalışan** | `calisan` | `123456` | Destek talebi formu doldurma, dosya yükleme, geçmiş talepleri ve mesajlaşmaları takip etme |
+| **IT Uzmanı** | `uzman` | `123456` | Tüm departman talepleri, P1-P4 ITIL aciliyet/etki skorları, SLA takibi, anlamsal emsal vaka analizi |
+
+---
+
+### Yöntem 2: Docker Compose ile Çalıştırma
+
+Docker kurulu ortamlarda konteyner olarak ayağa kaldırmak için:
 
 ```bash
 docker-compose up --build
 ```
 
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
-
-### Yöntem 2: Local Geliştirme
-
-**Backend:**
-```bash
-cd backend
-python -m venv venv
-venv\Scripts\activate          # Windows
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
-
-**Frontend:**
-```bash
-# frontend/ klasörünü tarayıcıda aç:
-# VS Code Live Server veya:
-cd frontend
-python -m http.server 3000
-```
-
-Tarayıcıda: http://localhost:3000
+- Web Arayüzü: [http://localhost:8000](http://localhost:8000) (veya Nginx proxy ile [http://localhost:3000](http://localhost:3000))
+- API Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
