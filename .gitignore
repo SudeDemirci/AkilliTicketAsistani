@@ -18,3 +18,17 @@ backend/data/tickets.csv
 backend/data/embeddings_cache.json
 backend/data/uploads/*
 !backend/data/uploads/.gitkeep
+
+# Documents & Scratch Test Files
+*.docx
+*.log
+test*.json
+tkt*.json
+test_results.json
+output.json
+served_app_debug.js
+test_gemini.py
+guvenlik_ihbari.txt
+yazilim_hatasi.txt
+yedekleme_raporu.txt
+yeni_ekipman_talebi.txt

@@ -1,3 +1,0 @@
-[2026-09-17 15:45:12] ERROR: Database connection failed. HikariPool-1 - Connection is not available, request timed out after 30005ms.
-[2026-09-17 15:45:12] FATAL: System shutdown initiated due to critical database failure.
-[2026-09-17 15:45:13] Caused by: java.net.ConnectException: Connection refused (Connection refused)
