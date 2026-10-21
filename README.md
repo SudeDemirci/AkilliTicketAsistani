@@ -18,7 +18,6 @@
 - **Dosya Analizi** — PDF, TXT, LOG dosyalarından metin çıkarma
 - **Sürekli Öğrenme** — Her analiz verisi kaydedilir, model güncellenebilir
 - **MLOps Paneli** — Arka planda model yeniden eğitimi + canlı durum takibi
-- **Premium UI** — Dark mode, glassmorphism, animasyonlu arayüz
 
 ---
 
