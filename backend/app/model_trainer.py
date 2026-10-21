@@ -141,8 +141,7 @@ def modelleri_egit(df: pd.DataFrame) -> dict:
     )
     joblib.dump(
         {"tfidf": tfidf_maliyet, "model": maliyet_model},
-        os.path.join(MODEL_DIR, "maliyet_model.pkl"),
-    )
+        os.path.join(MODEL_DIR, "maliyet_model.pkl"),)
 
     # Metrik özetini kaydet
     metrikler = {

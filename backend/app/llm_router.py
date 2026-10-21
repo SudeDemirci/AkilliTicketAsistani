@@ -70,7 +70,7 @@ Kullanıcının Belirttiği Öncelik: {oncelik}
 Talep Mesajı: {mesaj}"""
 
         if ek_icerik:
-            prompt += f"\nEk Dosya İçeriği:\n{ek_icerik[:1000]}"
+            prompt += f"\nEk Dosya İçeriği:\n{ek_icerik[:5000]}"
             
         prompt += "\n\nYANIT (sadece 3 satır):"
         print(f"--- LLM PROMPT ---\n{prompt}\n------------------", flush=True)

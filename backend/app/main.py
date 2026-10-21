@@ -10,7 +10,7 @@ import uuid
 import asyncio
 import io
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, timedelta
 
 if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
     import io as _io
@@ -20,7 +20,7 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() not in ("utf-8", "utf8"):
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, UploadFile, File, Form, BackgroundTasks, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from app.auth import create_access_token, get_current_user
+from app.auth import create_access_token, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -67,7 +67,16 @@ app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "null"],
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
+        "null",
+    ],
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -148,12 +157,12 @@ async def _dosya_oku(icerik: bytes, dosya_adi: str) -> str:
         try:
             import PyPDF2
             reader = PyPDF2.PdfReader(io.BytesIO(icerik))
-            return " ".join(p.extract_text() or "" for p in reader.pages)[:2000]
+            return " ".join(p.extract_text() or "" for p in reader.pages)[:5000]
         except Exception:
             return ""
     elif dosya_adi.endswith((".txt", ".log", ".csv")):
         try:
-            return icerik.decode("utf-8", errors="ignore")[:2000]
+            return icerik.decode("utf-8", errors="ignore")[:5000]
         except Exception:
             return ""
     return ""
@@ -246,8 +255,10 @@ def login(girdi: LoginGirdi):
         raise HTTPException(status_code=401, detail="Hatalı kullanıcı adı veya şifre")
     print(f"--- LOGIN SUCCESS ---", flush=True)
     
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user["kullanici_adi"], "rol": user["rol"], "ad_soyad": user["ad_soyad"], "birim": user["birim"]}
+        data={"sub": user["kullanici_adi"], "rol": user["rol"], "ad_soyad": user["ad_soyad"], "birim": user["birim"]},
+        expires_delta=access_token_expires
     )
     return {"token": access_token, "user": user}
 
@@ -560,3 +571,9 @@ def _egitim_yap_arka_plan():
         _egitim_yap()
     except Exception as e:
         print(f"[HATA] Egitim hatasi: {e}")
+
+
+FRONTEND_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", "frontend"))
+if os.path.exists(FRONTEND_DIR):
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+

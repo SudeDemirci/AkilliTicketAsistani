@@ -18,6 +18,34 @@ def metin_temizle(metin: str) -> str:
     return metin
 
 
+# Emsal aramasında anlam taşımayan Türkçe gürültü kelimeleri
+EMSAL_STOP_WORDS = {
+    # Duygu / aciliyet kelimeleri (teknik anlam taşımaz)
+    "acil", "acilen", "lütfen", "lutfen", "yardım", "yardim",
+    "merhaba", "iyi", "günler", "gunler", "sayın", "sayin",
+    "rica", "ederim", "teşekkür", "tesekkur", "selam",
+    # Bağlaçlar ve yaygın Türkçe ekler
+    "bir", "ve", "ile", "bu", "da", "de", "mi", "mu",
+    "ki", "ya", "ne", "için", "icin", "gibi", "çok", "cok",
+    "daha", "çünkü", "cunki", "ama", "ancak", "fakat",
+    # Eylem / genel ifadeler (teknik değil)
+    "oldu", "olmuş", "olmus", "oluyor", "değil", "degil",
+    "var", "yok", "yapamıyorum", "yapamiyorum", "edemiyorum",
+    "bilmiyorum", "bilmiyorum", "olmuyor",
+}
+
+
+def emsal_metin_temizle(metin: str) -> str:
+    """Emsal araması için stop-words filtrelemeli metin temizleme.
+    Model eğitiminden bağımsız olarak sadece emsal_bul'da kullanılır.
+    """
+    metin = metin.lower().strip()
+    metin = re.sub(r"[^\w\s]", " ", metin)
+    metin = re.sub(r"\s+", " ", metin)
+    kelimeler = [k for k in metin.split() if k not in EMSAL_STOP_WORDS]
+    return " ".join(kelimeler)
+
+
 def girti_birlestir(
     gonderen_birim: str,
     oncelik: str,
@@ -194,7 +222,10 @@ class TahminMotoru:
                             pass
             return metin
 
-        hedef_metin = metin_temizle(get_tam_metin(hedef_bilet))
+        # Emsal aramasında sadece ham mesaj metni kullanılır.
+        # birim: ve oncelik: önekleri farklı departmanlardan gelen aynı sorunu
+        # benzer göstermediği için burada kasıtlı olarak hariç tutulmuştur.
+        hedef_metin = emsal_metin_temizle(get_tam_metin(hedef_bilet))
         if not hedef_metin:
             return None
 
@@ -209,7 +240,7 @@ class TahminMotoru:
                 continue
             if b.get("durum") != "tamamlandi":
                 continue
-            metin = metin_temizle(get_tam_metin(b))
+            metin = emsal_metin_temizle(get_tam_metin(b))
             if not metin:
                 continue
             adaylar.append(metin)

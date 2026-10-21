@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Sistem bağımlılıkları
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    gcc \
+    gcc tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # Python bağımlılıkları

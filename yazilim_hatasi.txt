@@ -1,0 +1,11 @@
+Kullanıcı Geri Bildirimi / Hata Raporu:
+Tarih: 17 Eylül 2026
+Platform: Mobil Web Uygulaması
+
+Açıklama:
+Müşteriler alışveriş sepetine aynı anda 3'ten fazla ürün eklemeye çalıştığında "Sepete Git" butonu donuyor ve tıklanmıyor. Tarayıcının geliştirici konsolunu açıp baktığımızda aşağıdaki hatayı görüyoruz:
+"Uncaught TypeError: Cannot read property 'price' of undefined at calculateTotal (cart.js:45)"
+
+Bu sorun sadece mobil cihazlarda yaşanıyor, masaüstü bilgisayarlarda test ettik orada sorunsuz çalışıyor. Müşteriler tek tek ürün alabiliyor ama çoklu alımda yavaşlık olduğu için sepet ekranını terk ediyorlar. 
+
+Lütfen frontend ekibi bu JS hatasına bakabilir mi?

@@ -46,10 +46,11 @@ def run_tests():
         # We must use 'data' for Form fields in requests
         res = requests.post(f"{API_URL}/analiz-et", data=t, headers=headers)
         if res.status_code == 200:
-            sonuc = res.json()["sonuc"]
+            sonuc = res.json()
+            print(f">>> Talep No: {sonuc.get('talep_no')}")
             print(f">>> Kategori: {sonuc['kategori']}")
-            print(f">>> Atanan Departman: {sonuc.get('ilgili_departman', 'Yok')}")
-            print(f">>> AI Oncelik: {sonuc['ai_oncelik']['kod']} ({sonuc['ai_oncelik']['renk']})")
+            print(f">>> Atanan Departman: {sonuc.get('yonlendirilen_departman', 'Yok')}")
+            print(f">>> AI Oncelik: {sonuc['ai_oncelik']['kod']} ({sonuc['ai_oncelik']['etiket']})")
         else:
             print("HATA:", res.status_code, res.text)
         print("\n")

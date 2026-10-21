@@ -3,7 +3,22 @@
  * Calisان Portali + IT Uzmani Paneli
  */
 
-const API = "http://localhost:3000/api";
+let API = (window.location.port === "3000" && !window.location.search.includes("direct"))
+  ? "http://localhost:3000/api"
+  : "http://localhost:8000";
+
+// Eger port 3000 uzerinde nginx /api calismiyorsa otomatik olarak http://localhost:8000'e baglan
+(async function initApi() {
+  if (API === "http://localhost:3000/api") {
+    try {
+      const res = await fetch(`${API}/saglik`, { signal: AbortSignal.timeout(1200) });
+      if (!res.ok) throw new Error();
+    } catch (_) {
+      console.log("[API] /api erisilemedi, dogrudan http://localhost:8000 adresine geciliyor.");
+      API = "http://localhost:8000";
+    }
+  }
+})();
 
 const CAT_ICON = {
   "Yazilim Sorunu":     "💻",
@@ -147,9 +162,14 @@ async function submitTicket(e) {
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner-sm"></div> Analiz ediliyor...';
 
+  // gonderen_kisi ve birim her zaman login bilgisinden gelir,
+  // kullanıcının formu değiştirmesi engellendi.
+  const gonderen_kisi  = currentUser ? currentUser.ad_soyad  : document.getElementById("ad-soyad").value;
+  const gonderen_birim = currentUser ? currentUser.birim      : document.getElementById("birim").value;
+
   const form = new FormData();
-  form.append("gonderen_kisi",  document.getElementById("ad-soyad").value);
-  form.append("gonderen_birim", document.getElementById("birim").value);
+  form.append("gonderen_kisi",  gonderen_kisi);
+  form.append("gonderen_birim", gonderen_birim);
   form.append("oncelik",        "Orta");  // AI belirleyecek
   form.append("mesaj",          document.getElementById("mesaj").value);
   form.append("talep_turu",     document.getElementById("talep-turu-val").value);
@@ -379,7 +399,7 @@ function renderTickets() {
           ) : ''}
         </div>
         ${(() => {
-          if (t.emsal_analizi) {
+          if (t.emsal_analizi && currentUser && currentUser.rol === 'uzman') {
             let detay = "";
             if (t.emsal_analizi.benzer_vakalar && t.emsal_analizi.benzer_vakalar.length > 0) {
               detay = `
