@@ -8,13 +8,13 @@
 [![Scikit-learn](https://img.shields.io/badge/Scikit--learn-1.5-orange?style=for-the-badge&logo=scikit-learn)](https://scikit-learn.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
-🌐 **Canlı Uygulama:** [https://akilliticketasistani.onrender.com](https://akilliticketasistani.onrender.com)  
-📚 **Canlı Swagger API Dokümantasyonu:** [https://akilliticketasistani.onrender.com/docs](https://akilliticketasistani.onrender.com/docs)  
-🩺 **Canlı Sağlık Kontrolü:** [https://akilliticketasistani.onrender.com/saglik](https://akilliticketasistani.onrender.com/saglik)
+ **Canlı Uygulama:** [https://akilliticketasistani.onrender.com](https://akilliticketasistani.onrender.com)  
+ **Canlı Swagger API Dokümantasyonu:** [https://akilliticketasistani.onrender.com/docs](https://akilliticketasistani.onrender.com/docs)  
+ **Canlı Sağlık Kontrolü:** [https://akilliticketasistani.onrender.com/saglik](https://akilliticketasistani.onrender.com/saglik)
 
 ---
 
-## 🔑 Demo Giriş Hesapları
+##  Demo Giriş Hesapları
 
 Projeyi canlı ortamda veya yerelde hemen test etmek için hazır hesaplar:
 
@@ -25,7 +25,7 @@ Projeyi canlı ortamda veya yerelde hemen test etmek için hazır hesaplar:
 
 ---
 
-## 🌟 Temel Özellikler
+##  Temel Özellikler
 
 - **AI Kategori Sınıflandırma:** TF-IDF + SVC (RBF Çekirdeği) ve Google Gemini LLM desteğiyle 8 kategori sınıflandırması (~%90+ doğruluk).
 - **ITIL v4 Öncelik Matrisi (P1 - P4):** Etki (Impact) ve Aciliyet (Urgency) parametrelerine göre otomatik öncelik belirleme.
@@ -40,11 +40,11 @@ Projeyi canlı ortamda veya yerelde hemen test etmek için hazır hesaplar:
 
 ---
 
-## 🚀 Hızlı Başlangıç
+##  Hızlı Başlangıç
 
 ### Seçenek 1: Canlı Demoyu Deneyin (Kurulumsuz)
 Herhangi bir kurulum yapmadan doğrudan tarayıcınızdan inceleyebilirsiniz:  
-👉 **[https://akilliticketasistani.onrender.com](https://akilliticketasistani.onrender.com)**
+ **[https://akilliticketasistani.onrender.com](https://akilliticketasistani.onrender.com)**
 
 ---
 
@@ -96,7 +96,7 @@ Proje kök dizinindeki `render.yaml` sayesinde Render üzerinde 1 tıkla yayına
 
 ---
 
-## 📂 Proje Yapısı
+##  Proje Yapısı
 
 ```
 AkıllıTicketAsistanı/
@@ -130,7 +130,7 @@ AkıllıTicketAsistanı/
 
 ---
 
-## 🛠️ API Endpoint'leri
+##  API Endpoint'leri
 
 | Method | Endpoint | Açıklama |
 |---|---|---|
@@ -147,7 +147,7 @@ AkıllıTicketAsistanı/
 
 ---
 
-## 🤖 AI Model Detayları
+##  AI Model Detayları
 
 | Görev | Algoritma / Yöntem | Amaç |
 |---|---|---|
@@ -157,14 +157,14 @@ AkıllıTicketAsistanı/
 | **Öncelik Skorlaması** | Kural Tabanlı ITIL v4 Matrisi | P1 Kritik, P2 Yüksek, P3 Orta, P4 Düşük |
 
 **Kategori Kapsamı:**
-- 💻 Yazılım Sorunu
-- 🖥️ Donanım Arızası
-- 🌐 Ağ / Bağlantı
-- 🔒 Güvenlik / Erişim
-- 🗄️ Veritabanı
-- 📧 E-posta / İletişim
-- 💾 Yedekleme / Veri
-- 🔑 Lisans / Abonelik
+-  Yazılım Sorunu
+-  Donanım Arızası
+-  Ağ / Bağlantı
+-  Güvenlik / Erişim
+-  Veritabanı
+-  E-posta / İletişim
+-  Yedekleme / Veri
+-  Lisans / Abonelik
 
 ---
 
