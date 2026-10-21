@@ -3,18 +3,23 @@
  * Calisان Portali + IT Uzmani Paneli
  */
 
-let API = (window.location.port === "3000" && !window.location.search.includes("direct"))
-  ? "http://localhost:3000/api"
-  : "http://localhost:8000";
+let API = "";
+if (window.location.port === "3000") {
+  API = "http://localhost:3000/api";
+} else if (window.location.port === "5500" || window.location.protocol === "file:") {
+  API = "http://localhost:8000";
+} else {
+  // Hem localhost:8000 hem de Render/Railway gibi canli bulut domainleri icin
+  API = "";
+}
 
-// Eger port 3000 uzerinde nginx /api calismiyorsa otomatik olarak http://localhost:8000'e baglan
+// Docker Nginx proxy kontrolu (Port 3000 icin fallback)
 (async function initApi() {
   if (API === "http://localhost:3000/api") {
     try {
       const res = await fetch(`${API}/saglik`, { signal: AbortSignal.timeout(1200) });
       if (!res.ok) throw new Error();
     } catch (_) {
-      console.log("[API] /api erisilemedi, dogrudan http://localhost:8000 adresine geciliyor.");
       API = "http://localhost:8000";
     }
   }
